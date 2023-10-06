@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import MemberRegistration from './pages/Register';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +29,10 @@ export default function Router() {
     {
       path: 'login',
       element: <LoginPage />,
+    },
+    {
+      path: '/SACCO/register',
+      element: <MemberRegistration />,
     },
     {
       element: <SimpleLayout />,
