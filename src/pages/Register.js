@@ -1,7 +1,9 @@
 import { Button, FormControlLabel, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import React,{useEffect,useState} from 'react';
-
+import axios from 'axios';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // Define a styled TextField component
 const StyledTextField = styled(TextField)({
@@ -33,23 +35,63 @@ const MemberRegistration = () => {
     const [email,setEmail] = useState('');
     const [phoneNumber,setPhoneNumber] = useState('');
     const [employmentStatus,setEmploymentStatus] = useState('');
-    const [currentOccupation,setCurrentOccupation] = useState('');
-    const [employerName,setEmployerName] = useState('');
-    const [employerEmail,setEmployerEmail] = useState('');
-    const [employerPhoneNumber,setEmployerPhoneNumber] = useState('');
+    const [currentOccupation,setCurrentOccupation] = useState(null);
+    const [employerName,setEmployerName] = useState(null);
+    const [employerEmail,setEmployerEmail] = useState(null);
+    const [employerPhoneNumber,setEmployerPhoneNumber] = useState(null);
     const [nextOfKin,setNextOfKin] = useState('');
     const [nextOfKinEmail,setNextOfKinEmail] = useState('');
     const [nextOfKinPhoneNumber,setNextOfKinPhoneNumber] = useState('');
 
     // function to handle member application
-    const handleMemberApplication = (e) =>{
+    const handleMemberApplication = async(e) =>{
         e.preventDefault();
-        console.log("form submitted");
-        console.log(
-            firstName,lastName,email,dateOfBirth,residentialAddress,gender,phoneNumber,
+        
+        const memberApplicationData ={firstName,lastName,email,dateOfBirth,residentialAddress,gender,phoneNumber,
             employmentStatus,employerName,employerEmail,employerPhoneNumber,nextOfKin,
-            nextOfKinEmail,nextOfKinPhoneNumber
-        )
+            nextOfKinEmail,nextOfKinPhoneNumber,currentOccupation}
+        try {
+            // hitting the backend to send the data
+            const memberApplication = await axios.post('http://localhost:4343/api/members/apply',
+            JSON.stringify(memberApplicationData),
+            {
+                headers:{
+                    'Content-Type':'application/json'
+                }
+            });
+            console.log(memberApplication.status);
+            // checking if the request is a success
+            if(memberApplication.status === 200){
+                setFirstName('');
+                setLastName('');
+                setGender('');
+                setDateOfBirth('');
+                setResidentialAddress('');
+                setEmail('');
+                setPhoneNumber('');
+                setEmploymentStatus('');
+                setCurrentOccupation(null);
+                setEmployerName(null);
+                setEmployerEmail(null);
+                setEmployerPhoneNumber(null);
+                setNextOfKin('');
+                setNextOfKinEmail('');
+                setNextOfKinPhoneNumber('');
+                // show success notification
+                toast.success('Your application for SACCO Membership is successful',{
+                    position: 'top-right'
+                })
+            }
+        
+        } catch (error) {
+            console.log(error);
+            // show fail message
+            toast.error('Your application for SACCO Membership has failed',{
+                position: 'top-right'
+            })
+        }
+        
+
     }
     
     return (

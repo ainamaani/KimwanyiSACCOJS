@@ -95,7 +95,7 @@ const MemberSchema = new mongoose.Schema({
         validate: {
             validator: function (value) {
                 // Check if the phone number has at least 10 digits
-                if(value !== null){
+                if(value !== null ){
                     return value.length >= 10;
                 } 
                 
