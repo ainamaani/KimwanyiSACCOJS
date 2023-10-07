@@ -93,7 +93,18 @@ const MemberRegistration = () => {
         
 
     }
-    
+    // Define the "Current Occupation" field to avoid duplication
+    const currentOccupationField = (
+        <StyledTextField
+            label="Current occupation"
+            variant="outlined"
+            fullWidth
+            required
+            value={currentOccupation}
+            onChange={(e) => { setCurrentOccupation(e.target.value) }}
+        />
+    );
+
     return (
         <StyledPageContent>
             <Typography variant="h3">Kimwanyi SACCO Member Registration Form</Typography>
@@ -170,34 +181,39 @@ const MemberRegistration = () => {
                         label="Unemployed"
                     />
                 </StyledRadioGroup>
-                <StyledTextField
-                label="Current occupation"
-                variant="outlined"
-                fullWidth required
-                value={currentOccupation}
-                onChange={(e)=> {setCurrentOccupation(e.target.value)}}
-                />
-                <StyledTextField
-                label="Employer name"
-                variant="outlined"
-                fullWidth required
-                value={employerName}
-                onChange={(e)=> {setEmployerName(e.target.value)}}
-                />
-                <StyledTextField
-                label="Employer email"
-                variant="outlined"
-                fullWidth required
-                value={employerEmail}
-                onChange={(e)=> {setEmployerEmail(e.target.value)}}
-                />
-                <StyledTextField
-                label="Employer Phone number"
-                variant="outlined"
-                fullWidth required
-                value={employerPhoneNumber}
-                onChange={(e)=> {setEmployerPhoneNumber(e.target.value)}}
-                />
+                {/* Rendering certain fields depending on the employment status */}
+                { employmentStatus === 'Self Employed' && currentOccupationField }
+                { employmentStatus === 'Employed'  && (
+                    <>  
+                        {currentOccupationField}
+                        <StyledTextField
+                        label="Employer name"
+                        variant="outlined"
+                        fullWidth
+                        value={employerName}
+                        onChange={(e)=> {setEmployerName(e.target.value)}}
+                        
+                        />
+                        <StyledTextField
+                        label="Employer email"
+                        variant="outlined"
+                        fullWidth
+                        value={employerEmail}
+                        onChange={(e)=> {setEmployerEmail(e.target.value)}}
+                        
+                        />
+                        <StyledTextField
+                        label="Employer Phone number"
+                        variant="outlined"
+                        fullWidth
+                        value={employerPhoneNumber}
+                        onChange={(e)=> {setEmployerPhoneNumber(e.target.value)}}
+                        
+                        />
+                    </>
+                
+                )}
+                
                 {/* SECTION 3 */}
                 <Typography variant="h4">Next of kin details</Typography>
                 <StyledTextField
