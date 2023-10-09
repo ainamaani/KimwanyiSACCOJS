@@ -10,7 +10,7 @@ const MemberSchema = new mongoose.Schema({
     },
     gender :{
         type:String,
-        required:true,
+        required:[true,'Gender is required'],
         enum: {
             values: ["Male","Female","Other"],
             message: "Gender must be one of: Male, Female, Other."
@@ -21,7 +21,7 @@ const MemberSchema = new mongoose.Schema({
         required:[true,'Date of birth is required.'],
         validate: {
             validator: function (value) {
-                // Define the minimum allowed year (e.g., 1900)
+                // Define the minimum allowed year 
                 const minimumYear = 2005;
                 
                 // Extract the year from the date of birth
@@ -40,31 +40,42 @@ const MemberSchema = new mongoose.Schema({
     email:{
         type:String,
         required:[true,'Email Address is required.'],
-        unique:[true,'This email already exists'],
         validate: {
-            validator: function (value) {
+            validator: async function (value) {
                 // Check if the email format is valid
                 const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-                return emailRegex.test(value);
-            },
-            message: 'Invalid email format. Please provide a valid email address.'
+                if (!emailRegex.test(value)) {
+                    throw new Error('Invalid email format. Please provide a valid email address.');
+                }
+
+                // Check if the email is already in use
+                const existingMember = await this.constructor.findOne({ email: value });
+                if (existingMember) {
+                    throw new Error('Email already exists');
+                }  
+            }
         }
     },
     phoneNumber:{
         type:String,
         required:[true,'Phone number is required'],
-        unique:[true,'This phone number already exists'],
         validate: {
-            validator: function (value) {
+            validator: async function (value) {
                 // Check if the phone number has at least 10 digits
-                return value.length >= 10;
-            },
-            message: 'Your Phone number must have at least 10 digits.'
+                if(value.length < 10){
+                    throw new Error('Phone number must be not less than 10 digits');
+                }
+                //check for uniqueness
+                const existingPhoneNumber = await this.constructor.findOne({ phoneNumber:value });
+                if(existingPhoneNumber){
+                    throw new Error('This Phone number already exists');
+                }
+            }
         }
     },
     employmentStatus:{
         type:String,
-        required:true,
+        required:[true,'Employment status is required'],
         enum:{
             values: ["Employed","Self Employed","Unemployed"],
             message: "Employment status has to be one of: Employed,Self Employed,Unemployed"
@@ -121,7 +132,7 @@ const MemberSchema = new mongoose.Schema({
     },
     nextOfKinPhoneNumber:{
         type:String,
-        required:[true,'Phone number is required.'],
+        required:[true,'Next of Kin phone number is required.'],
         validate: {
             validator: function (value) {
                 // Check if the phone number has at least 10 digits

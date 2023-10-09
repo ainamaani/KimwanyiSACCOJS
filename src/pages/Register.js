@@ -12,6 +12,12 @@ const StyledTextField = styled(TextField)({
   display: 'block',
 });
 
+const StyledButton = styled(Button)({
+    marginTop: 20,
+    marginBottom: 20,
+    display: 'block'
+})
+
 // Define a styled RadioGroup component
 const StyledRadioGroup = styled(RadioGroup)({
   marginTop: 20,
@@ -42,6 +48,12 @@ const MemberRegistration = () => {
     const [nextOfKin,setNextOfKin] = useState('');
     const [nextOfKinEmail,setNextOfKinEmail] = useState('');
     const [nextOfKinPhoneNumber,setNextOfKinPhoneNumber] = useState('');
+    const [errors,setErrors] = useState({});
+
+    // logging the errors when the object changes and outside the function to allow time for setting the errors
+    useEffect(()=>{
+        console.log(errors);
+    },[errors])
 
     // function to handle member application
     const handleMemberApplication = async(e) =>{
@@ -59,6 +71,8 @@ const MemberRegistration = () => {
                     'Content-Type':'application/json'
                 }
             });
+            // reset the error object
+            setErrors({});
             console.log(memberApplication.status);
             // checking if the request is a success
             if(memberApplication.status === 200){
@@ -84,7 +98,11 @@ const MemberRegistration = () => {
             }
         
         } catch (error) {
-            console.log(error);
+            if (error.response && error.response.data && error.response.data.errors) {
+                // If there are validation errors, set them in the state
+                setErrors(error.response.data.errors);
+              }
+            
             // show fail message
             toast.error('Your application for SACCO Membership has failed',{
                 position: 'top-right'
@@ -117,54 +135,88 @@ const MemberRegistration = () => {
                 fullWidth required
                 value={firstName}
                 onChange={(e)=> {setFirstName(e.target.value)}}
+                error={errors.firstName}
                 />
+                {/* Display errors for the first name field */}
+                { errors.firstName && (
+                    <span style={{color:'red'}}>{errors.firstName}</span>
+                )}
                 <StyledTextField
                 label="Last name"
                 variant="outlined"
                 fullWidth required
                 value={lastName}
                 onChange={(e)=> {setLastName(e.target.value)}}
+                error={errors.lastName}
                 />
-                <StyledRadioGroup value={gender} onChange={(e)=> {setGender(e.target.value)}}>
+                {/* Display errors for the last name field */}
+                { errors.lastName && (
+                    <span style={{color:'red'}}>{errors.lastName}</span>
+                )}
+                <StyledRadioGroup value={gender} onChange={(e)=> {setGender(e.target.value)}} >
                     <FormControlLabel value="Male" control={<Radio />} label="Male" />
                     <FormControlLabel value="Female" control={<Radio />} label="Female" />
                     <FormControlLabel value="Other" control={<Radio />} label="Other" />
                 </StyledRadioGroup>
+                {/* Display errors for the gender field */}
+                { errors.gender && (
+                    <span style={{color:'red'}}>{errors.gender}</span>
+                )}
                 <StyledTextField
                 label="Date of birth"
                 variant="outlined"
                 fullWidth required
                 value={dateOfBirth}
                 onChange={(e)=> {setDateOfBirth(e.target.value)}}
+                error={errors.dateOfBirth}
                 type="date"
                 InputLabelProps={{
                     shrink: true,
                 }}
                 />
+                {/* Display errors for the date of birth field */}
+                { errors.dateOfBirth && (
+                    <span style={{color:'red'}}>{errors.dateOfBirth}</span>
+                )}
                 <StyledTextField 
                 label="Residential Address" 
                 variant="outlined" 
                 fullWidth required 
                 value={residentialAddress}
                 onChange={(e)=> {setResidentialAddress(e.target.value)}}
+                error={errors.residentialAddress}
                 />
+                {/* Display errors for the residential address field */}
+                { errors.residentialAddress && (
+                    <span style={{color:'red'}}>{errors.residentialAddress}</span>
+                )}
                 <StyledTextField 
                 label="Email" 
                 variant="outlined" 
                 fullWidth required 
                 value={email}
                 onChange={(e)=> {setEmail(e.target.value)}}
+                error={errors.email}
                 />
+                {/* Display errors for the email field */}
+                { errors.email && (
+                    <span style={{color:'red'}}>{errors.email}</span>
+                )}
                 <StyledTextField
                 label="Phone number"
                 variant="outlined"
                 fullWidth required
                 value={phoneNumber}
                 onChange={(e)=> {setPhoneNumber(e.target.value)}}
+                error={errors.phoneNumber}
                 />
+                {/* Display errors for the phone number field */}
+                { errors.phoneNumber && (
+                    <span style={{color:'red'}}>{errors.phoneNumber}</span>
+                )}
                 {/* SECTION 2 */}
                 <Typography variant="h4">Employment details</Typography>
-                <StyledRadioGroup value={employmentStatus} onChange={(e)=>{setEmploymentStatus(e.target.value)}}>
+                <StyledRadioGroup value={employmentStatus} onChange={(e)=>{setEmploymentStatus(e.target.value)}} error={errors.firstName}>
                     <FormControlLabel
                         value="Employed"
                         control={<Radio />}
@@ -181,6 +233,10 @@ const MemberRegistration = () => {
                         label="Unemployed"
                     />
                 </StyledRadioGroup>
+                {/* Display errors for the employment status field */}
+                { errors.employmentStatus && (
+                    <span style={{color:'red'}}>{errors.employmentStatus}</span>
+                )}
                 {/* Rendering certain fields depending on the employment status */}
                 { employmentStatus === 'Self Employed' && currentOccupationField }
                 { employmentStatus === 'Employed'  && (
@@ -222,23 +278,38 @@ const MemberRegistration = () => {
                 fullWidth required
                 value={nextOfKin}
                 onChange={(e)=> {setNextOfKin(e.target.value)}}
+                error={errors.nextOfKin}
                 />
+                {/* Display errors for the next of kin field */}
+                { errors.nextOfKin && (
+                    <span style={{color:'red'}}>{errors.nextOfKin}</span>
+                )}
                 <StyledTextField
                 label="Next of Kin Email"
                 variant="outlined"
                 fullWidth required
                 value={nextOfKinEmail}
                 onChange={(e)=> {setNextOfKinEmail(e.target.value)}}
+                error={errors.nextOfKinEmail}
                 />
+                {/* Display errors for the next of kin email field */}
+                { errors.nextOfKinEmail && (
+                    <span style={{color:'red'}}>{errors.nextOfKinEmail}</span>
+                )}
                 <StyledTextField
                 label="Next of Kin Phone number"
                 variant="outlined"
                 fullWidth required
                 value={nextOfKinPhoneNumber}
                 onChange={(e)=> {setNextOfKinPhoneNumber(e.target.value)}}
+                error={errors.nextOfKinPhoneNumber}
                 />
-                <Button variant="contained" type="submit"
-                >Apply</Button>
+                {/* Display errors for the next of kin phone number field */}
+                { errors.nextOfKinPhoneNumber && (
+                    <span style={{color:'red'}}>{errors.nextOfKinPhoneNumber}</span>
+                )}
+                <StyledButton variant="contained" type="submit"
+                >Apply</StyledButton>
             </form>
         </StyledPageContent>
     );

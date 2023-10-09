@@ -50,14 +50,22 @@ const handleMemberApplication = async(req,res) =>{
         }
         
     } catch (error) {
-        // Check if the error is a validation error
-        if (error.name === 'ValidationError') {
-            // Extract error messages from the error object and send them as a response
-            const errorMessages = Object.values(error.errors).map(err => err.message);
-            return res.status(400).json({ errors: errorMessages });
+          // Check if the error is a validation error
+        if (error.name === 'ValidationError' || error.code === 11000) {
+            const errors = {};
+    
+            // Iterate through the validation errors and build the errors object
+            for (const field in error.errors) {
+            errors[field] = error.errors[field].message;
+            }
+    
+            return res.status(400).json({ errors });
+        }else if (error.code === 11000 && error.keyPattern.email) {
+            // Handle the unique constraint violation error for the email field
+            errors.email = "Email already exists";
         }
         // Handle other types of errors (e.g., database errors) here
-        return res.status(500).json({error: error.message});
+        return res.status(500).json({ error: error.message });
     }
 }
 
