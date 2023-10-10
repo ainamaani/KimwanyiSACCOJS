@@ -83,22 +83,49 @@ const MemberSchema = new mongoose.Schema({
     },
     currentOccupation:{
         type:String,
+        required: function(){
+            // Make field required when the employment status is Employed
+            return this.constructor.employmentStatus === "Employed" || this.constructor.employmentStatus === "Self Employed";
+        },
+        validate: {
+            validator: function () {
+              // Make currentOccupation required when employmentStatus is "Employed" or "Self Employed"
+              return !((this.employmentStatus === "Employed" && !this.currentOccupation) || (this.employmentStatus === "Self Employed" && !this.currentOccupation));
+            },
+            message: 'Current occupation is required when employed or self employed.'
+          } 
     },
     employerName:{
-        type:String
+        type:String,
+        required: function(){
+            return this.constructor.employmentStatus === "Employed";
+
+        },
+        validate: {
+            validator: function(){
+                return !(this.employmentStatus === "Employed" && !this.employerName);
+            },
+            message: 'Employer name required when employed'
+        }
     },
     employerEmail:{
         type:String,
+        required: function(){
+            return this.constructor.employmentStatus === "Employed";
+
+        },
         validate: {
             validator: function (value) {
                 // Check if the email format is valid
-                if(value !== null){
-                    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-                    return emailRegex.test(value);
-                }  
-                
-            },
-            message: 'Invalid Employer email format. Please provide a valid email address.'
+                const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+                if(value !== null && !emailRegex.test(value)){
+                    throw new Error('Invalid Employer email format. Please provide a valid email address.');
+                } 
+                // Checking for the employer email given the employment status is Employed
+                if(this.employmentStatus === "Employed" && !this.employerEmail){
+                    throw new Error('Employer E-mail is required when employed');
+                } 
+            }  
         }
     },
     employerPhoneNumber:{
@@ -106,12 +133,13 @@ const MemberSchema = new mongoose.Schema({
         validate: {
             validator: function (value) {
                 // Check if the phone number has at least 10 digits
-                if(value !== null ){
-                    return value.length >= 10;
+                if(value !== null && value.length < 10){
+                    throw new Error('Employer Phone number must have at least 10 digits.');
                 } 
-                
+                if(this.employmentStatus === "Employed" && !this.employerPhoneNumber){
+                    throw new Error('Employer Phone number is required when employed');
+                }
             },
-            message: 'Employer Phone number must have at least 10 digits.'
         }
     },
     nextOfKin:{

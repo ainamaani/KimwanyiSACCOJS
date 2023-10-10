@@ -113,14 +113,20 @@ const MemberRegistration = () => {
     }
     // Define the "Current Occupation" field to avoid duplication
     const currentOccupationField = (
-        <StyledTextField
+        <>
+            <StyledTextField
             label="Current occupation"
             variant="outlined"
             fullWidth
-            required
+            error={errors.currentOccupation}
+            required={employmentStatus === "Employed" || employmentStatus === "Self Employed"}
             value={currentOccupation}
             onChange={(e) => { setCurrentOccupation(e.target.value) }}
-        />
+            />
+            { errors.currentOccupation && (
+                <span style={{color:'red'}}>{errors.currentOccupation}</span>
+            )}
+        </>
     );
 
     return (
@@ -247,25 +253,37 @@ const MemberRegistration = () => {
                         variant="outlined"
                         fullWidth
                         value={employerName}
+                        error={errors.employerName}
                         onChange={(e)=> {setEmployerName(e.target.value)}}
-                        
+                        required={employmentStatus === "Employed"}
                         />
+                        { errors.employerName && (
+                            <span style={{color:'red'}}>{errors.employerName}</span>
+                        )}
                         <StyledTextField
                         label="Employer email"
                         variant="outlined"
                         fullWidth
                         value={employerEmail}
+                        error={errors.employerEmail}
                         onChange={(e)=> {setEmployerEmail(e.target.value)}}
-                        
+                        required={employmentStatus === "Employed"}
                         />
+                        { errors.employerEmail && (
+                             <span style={{color:'red'}}>{errors.employerEmail}</span>
+                        )}
                         <StyledTextField
                         label="Employer Phone number"
                         variant="outlined"
                         fullWidth
                         value={employerPhoneNumber}
+                        error={errors.employerPhoneNumber}
                         onChange={(e)=> {setEmployerPhoneNumber(e.target.value)}}
-                        
+                        required={employmentStatus === "Employed"}
                         />
+                        { errors.employerPhoneNumber && (
+                             <span style={{color:'red'}}>{errors.employerPhoneNumber}</span>
+                        )}
                     </>
                 
                 )}
