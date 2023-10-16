@@ -1,8 +1,13 @@
 import React from 'react';
-import { BrowserRouter,Routes,Route } from 'react-router-dom';
+import { BrowserRouter,Routes,Route, Outlet } from 'react-router-dom';
 import MemberApplicationPage from './pages/Application';
 import MemberApplications from './pages/MemberApplications';
 import { ToastContainer } from 'react-toastify';
+import Layout from './components/Layout';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import Loans from './pages/Loans';
+import Transactions from './pages/Transactions';
 
 
 function App() {
@@ -11,16 +16,20 @@ function App() {
       <ToastContainer/>
       <BrowserRouter>
         <Routes>
-          <Route path='/apply'
+          <Route path="/apply" element={<MemberApplicationPage />} />
+          <Route path="/applications" element={<MemberApplications />} />
+          <Route
             element={
-              <MemberApplicationPage />
+              <Layout>
+                <Outlet /> {/* Use Outlet to render child routes */}
+              </Layout>
             }
-          />
-          <Route path='/applications'
-            element={
-              <MemberApplications />
-            }
-          />
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/loans" element={<Loans />} />
+            <Route path="/transactions" element={<Transactions />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
