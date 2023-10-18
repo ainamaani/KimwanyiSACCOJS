@@ -1,4 +1,4 @@
-import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from "@mui/material";
 import { useEffect,useState } from "react";
 import axios from "axios";
 import useMemberApplicationContext from "../hooks/UseMemberApplicationContext";
@@ -31,6 +31,13 @@ const MemberApplications = ():JSX.Element => {
 
     const [page,setPage] = useState<number>(0); //current page
     const [rowsPerPage,setRowsPerPage] = useState<number>(5); //Rows per page
+    const [isRejectDialogOpen,setIsRejectDialogOpen] = useState<boolean>(false);
+    const [applicationToReject,setApplicationToReject] = useState<string | null>(null);
+    const [isApproveDialogOpen,setIsApproveDialogOpen] = useState<boolean>(false);
+    const [applicationToApprove,setApplicationToApprove] = useState<string | null>(null);
+    const [isViewDialogOpen,setIsViewDialogOpen] = useState<boolean>(false);
+    const [applicationToView,setApplicationToView] = useState<Application | null>(null);
+
 
     useEffect(()=>{
         const fetchMemberApplications = async() =>{
@@ -63,8 +70,45 @@ const MemberApplications = ():JSX.Element => {
         setPage(0); //Reset to the first page when changing rows per page
     }
 
+    // Function to handle opening of the dialog
+    const handleOpenRejectDialog = (applicationId : string) =>{
+        setApplicationToReject(applicationId);
+        setIsRejectDialogOpen(true);
+    } 
+
+    // Function to handle closing of the dialog
+    const handleCloseRejectDialog = () =>{
+        setApplicationToReject(null);
+        setIsRejectDialogOpen(false);
+    }
+
+    // Function to handle opening of the dialog
+    const handleOpenApproveDialog = (applicationId : string) =>{
+        setApplicationToApprove(applicationId);
+        setIsApproveDialogOpen(true);
+    } 
+
+    // Function to handle closing of the dialog
+    const handleCloseApproveDialog = () =>{
+        setApplicationToApprove(null);
+        setIsApproveDialogOpen(false);
+    }
+
+    // Function to handle opening of the dialog
+    const handleOpenViewDialog = (application : Application) =>{
+        setApplicationToView(application);
+        setIsViewDialogOpen(true);
+    } 
+
+    // Function to handle closing of the dialog
+    const handleCloseViewDialog = () =>{
+        setApplicationToView(null);
+        setIsViewDialogOpen(false);
+    }
+
     return ( 
         <div>
+            <Typography variant="h5">Member Applications</Typography>
             { applications ? (
                 <TableContainer component={Paper}>
                     <Table>
@@ -89,17 +133,23 @@ const MemberApplications = ():JSX.Element => {
                                             <TableCell>{application.employmentStatus}</TableCell>
                                             <TableCell>
                                                 <Tooltip title="View">
-                                                    <IconButton color="primary" size="large" >
+                                                    <IconButton color="primary" size="large" 
+                                                        onClick={()=>{handleOpenViewDialog(application)}}
+                                                    >
                                                         <VisibilityRounded/>
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip title="Approve">
-                                                    <IconButton style={{color:'green'}} size="large" >
+                                                    <IconButton style={{color:'green'}} size="large" 
+                                                        onClick={()=>{handleOpenApproveDialog(application._id)}}
+                                                    >
                                                         <CheckCircleOutlineRounded />
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip title="Reject">
-                                                    <IconButton style={{color:'red'}} size="large">
+                                                    <IconButton style={{color:'red'}} size="large"
+                                                        onClick={()=>{handleOpenRejectDialog(application._id)}}
+                                                    >
                                                         <CancelOutlined/>
                                                     </IconButton>
                                                 </Tooltip>
@@ -126,7 +176,116 @@ const MemberApplications = ():JSX.Element => {
                 <Typography variant="h5">
                     Loadinggg....
                 </Typography>
-            )} 
+            )}
+            {/* Reject dialog */}
+            <Dialog
+                open={isRejectDialogOpen}
+                onClose={handleCloseRejectDialog}
+                aria-labelledby="reject-dialog-title"
+                aria-describedby="reject-dialog-description"
+            >
+                <DialogTitle id="reject-dialog-title">Confirm Reject</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">
+                        Are you sure you want to reject this application?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseRejectDialog} color="primary" variant="contained">Cancel</Button>
+                    <Button variant="contained" color="error" startIcon={ <CancelOutlined/> } >Confirm Reject</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Approve dialog */}
+            <Dialog
+                open={isApproveDialogOpen}
+                onClose={handleCloseApproveDialog}
+                aria-labelledby="approve-dialog-title"
+                aria-describedby="approve-dialog-description"
+            >
+                <DialogTitle id="approve-dialog-title">Confirm Approve</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">
+                        Are you sure you want to approve this application?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseApproveDialog} color="primary" variant="contained">Cancel</Button>
+                    <Button variant="contained" color="success" startIcon={ <CheckCircleOutlineOutlined/> } >Confirm Approve</Button>
+                </DialogActions>
+            </Dialog>
+            {/* View details dialog */}
+            <Dialog
+                open={isViewDialogOpen}
+                onClose={handleCloseViewDialog}
+                PaperProps={{
+                    style:{
+                        width: '800px'
+                    }
+                }}
+                aria-labelledby="view-dialog-title"
+                aria-describedby="view-dialog-description"
+                >
+                <DialogTitle id="view-dialog-title">View Application Details</DialogTitle>
+                <DialogContent>
+                    {applicationToView && (
+                    <>
+                        <Typography variant="body1">
+                        <strong>First Name:</strong> {applicationToView.firstName}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Last Name:</strong> {applicationToView.lastName}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Gender:</strong> {applicationToView.gender}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Date of birth:</strong> {applicationToView.dateOfBirth ? new Date(applicationToView.dateOfBirth).toLocaleDateString() : ''}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Residential Address:</strong> {applicationToView.residentialAddress}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Email:</strong> {applicationToView.email}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Phone Number:</strong> {applicationToView.phoneNumber}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Employment Status:</strong> {applicationToView.employmentStatus}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Current Occupation:</strong> {applicationToView.currentOccupation ? applicationToView.currentOccupation : 'None'}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Employer Name:</strong> {applicationToView.employerName ? applicationToView.employerName : 'None'}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Employer Email:</strong> {applicationToView.employerEmail ? applicationToView.employerEmail : 'None'}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Employer Phone number :</strong> {applicationToView.employerPhoneNumber ? applicationToView.employerPhoneNumber : 'None'}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Next of Kin:</strong> {applicationToView.nextOfKin}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Next of Kin email:</strong> {applicationToView.nextOfKinEmail}
+                        </Typography>
+                        <Typography variant="body1">
+                        <strong>Next of Kin Phone number:</strong> {applicationToView.nextOfKinPhoneNumber}
+                        </Typography>
+                        
+                    </>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseViewDialog} color="primary" variant="contained">
+                    Close
+                    </Button>
+                </DialogActions>
+                </Dialog>
+
         </div>
      );
 }
