@@ -3,6 +3,8 @@ import { useEffect,useState } from "react";
 import axios from "axios";
 import useMemberApplicationContext from "../hooks/UseMemberApplicationContext";
 import { CancelOutlined, CheckCircleOutlineOutlined, CheckCircleOutlineRounded, VisibilityRounded } from "@mui/icons-material";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Application{
     _id:string,
@@ -21,6 +23,7 @@ interface Application{
     nextOfKin:string,
     nextOfKinEmail:string,
     nextOfKinPhoneNumber:string,
+    membershipStatus:string
     
 }
 
@@ -55,11 +58,8 @@ const MemberApplications = ():JSX.Element => {
 
         fetchMemberApplications();
 
-    },[dispatch,applications]);
+    },[applications,dispatch]);
 
-    useEffect(()=>{
-        console.log(applications);
-    },[]);
 
     const handleChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage:number) =>{
         setPage(newPage);
@@ -106,6 +106,26 @@ const MemberApplications = ():JSX.Element => {
         setIsViewDialogOpen(false);
     }
 
+    // Function to approve member
+    const handleApproveMember = async(member : string | null) =>{
+        if(member !== null){
+            try {
+                const memberApproval = await axios.get(`http://localhost:4343/api/members/approve/${member}`);
+                if(memberApproval.status === 200){
+                    handleCloseApproveDialog();
+                    toast.success('Member has been approved successfully',{
+                        position: 'top-right'
+                    })
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error('Member approval failed',{
+                    position: 'top-right'
+                })
+            }
+        }
+    }
+
     return ( 
         <div>
             <Typography variant="h5">Member Applications</Typography>
@@ -118,6 +138,7 @@ const MemberApplications = ():JSX.Element => {
                                 <TableCell>Last Name</TableCell>
                                 <TableCell>Gender</TableCell>
                                 <TableCell>Employment Status</TableCell>
+                                <TableCell>Status</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -131,6 +152,7 @@ const MemberApplications = ():JSX.Element => {
                                             <TableCell>{application.lastName}</TableCell>
                                             <TableCell>{application.gender}</TableCell>
                                             <TableCell>{application.employmentStatus}</TableCell>
+                                            <TableCell>{application.membershipStatus}</TableCell>
                                             <TableCell>
                                                 <Tooltip title="View">
                                                     <IconButton color="primary" size="large" 
@@ -211,7 +233,10 @@ const MemberApplications = ():JSX.Element => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseApproveDialog} color="primary" variant="contained">Cancel</Button>
-                    <Button variant="contained" color="success" startIcon={ <CheckCircleOutlineOutlined/> } >Confirm Approve</Button>
+                    <Button variant="contained" color="success" 
+                    onClick={()=>{handleApproveMember(applicationToApprove)}}
+                    startIcon={ <CheckCircleOutlineOutlined/> } 
+                    >Confirm Approve</Button>
                 </DialogActions>
             </Dialog>
             {/* View details dialog */}

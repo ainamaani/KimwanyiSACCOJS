@@ -172,8 +172,9 @@ const approveMembership = async(req,res) =>{
         //change the member's membership status to Approved
         if(memberToApprove){
             memberToApprove.membershipStatus = "Approved";
+
             //save the member object with the new membership status
-            const approvedMember = await memberToApprove.save();
+            const approvedMember = await memberToApprove.save({ validateBeforeSave:false });
 
             if(approvedMember){
                 //send approval email
