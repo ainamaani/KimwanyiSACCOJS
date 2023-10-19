@@ -1,11 +1,13 @@
 const express = require("express");
 const { handleMemberApplication,getMemberData,
     getSingleMember,updateMemberData,declineApplication,
-    approveMembership,deleteMember } = require("../controllers/MemberController");
+    approveMembership,deleteMember,getApprovedMembers } = require("../controllers/MemberController");
 const router = express.Router();
 
 
 router.post('/apply', handleMemberApplication);
+
+router.get('/approvedmembers', getApprovedMembers);
 
 router.get('/', getMemberData);
 

@@ -41,7 +41,6 @@ const MemberApplications = ():JSX.Element => {
     const [isViewDialogOpen,setIsViewDialogOpen] = useState<boolean>(false);
     const [applicationToView,setApplicationToView] = useState<Application | null>(null);
 
-
     useEffect(()=>{
         const fetchMemberApplications = async() =>{
             //try fetching member applications

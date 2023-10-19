@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Loans from './pages/Loans';
 import Transactions from './pages/Transactions';
+import Members from './pages/Members';
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/loans" element={<Loans />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/applications" element={<MemberApplications />} />
+            <Route path="/members" element={<Members />}/>
           </Route>
         </Routes>
       </BrowserRouter>

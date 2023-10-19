@@ -1,5 +1,5 @@
 import { DashboardOutlined,AccountCircleOutlined,CreditCardOutlined,
-    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined } from "@mui/icons-material";
+    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined } from "@mui/icons-material";
 import { Drawer, Typography, List, ListItem, ListItemIcon,ListItemText,
     AppBar,Toolbar } from "@mui/material";
 import { useNavigate,useLocation } from "react-router-dom";
@@ -74,6 +74,11 @@ const menuItems = [
         text:'Applications',
         icon: <AssignmentIndOutlined color="primary" />,
         path:'/applications'
+    },
+    {
+        text:'Members',
+        icon: <GroupOutlined color="primary"/>,
+        path:'/members'
     },
     {
         text:'Logout',

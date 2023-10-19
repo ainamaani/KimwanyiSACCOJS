@@ -225,6 +225,20 @@ const deleteMember = async(req,res)=>{
     }
 }
 
+//fetch approved members
+const getApprovedMembers = async(req,res) =>{
+    try {
+        const approvedMembers = await Member.find({ membershipStatus:"Approved" }).sort({ createdAt: -1 });
+        if(approvedMembers){
+            return res.status(200).json(approvedMembers);
+        }else{
+            return res.status(400).json({ error: "Could not fetch the approved members" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     handleMemberApplication,
     getMemberData,
@@ -232,5 +246,6 @@ module.exports = {
     updateMemberData,
     declineApplication,
     approveMembership,
-    deleteMember
+    deleteMember,
+    getApprovedMembers
 }
