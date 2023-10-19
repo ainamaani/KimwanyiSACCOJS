@@ -132,7 +132,7 @@ const declineApplication = async(req,res) =>{
             //change the membership status to Declined
             memberToDecline.membershipStatus = "Declined";
             //save the new member object after updating the membership status
-            await memberToDecline.save();
+            await memberToDecline.save({ validateBeforeSave:false });
             
             //SEND EMAIL AFTER DECLINING MEMBER
             sendEmail('aina.isaac2002@gmail.com',

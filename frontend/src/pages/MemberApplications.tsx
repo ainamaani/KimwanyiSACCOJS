@@ -107,19 +107,38 @@ const MemberApplications = ():JSX.Element => {
     }
 
     // Function to approve member
-    const handleApproveMember = async(member : string | null) =>{
+    const handleApproveMember = async(member : string | null) => {
         if(member !== null){
             try {
                 const memberApproval = await axios.get(`http://localhost:4343/api/members/approve/${member}`);
                 if(memberApproval.status === 200){
                     handleCloseApproveDialog();
-                    toast.success('Member has been approved successfully',{
+                    toast.success('Member application approved successfully',{
                         position: 'top-right'
                     })
                 }
             } catch (error) {
                 console.log(error);
                 toast.error('Member approval failed',{
+                    position: 'top-right'
+                })
+            }
+        }
+    }
+    // Function to decline membership
+    const handleRejectMember = async(member : string | null) =>{
+        if(member !== null){
+            try {
+                const memberRejection = await axios.get(`http://localhost:4343/api/members/decline/${member}`)
+                if(memberRejection.status === 200){
+                    handleCloseRejectDialog();
+                    toast.success('Application declined successfully',{
+                        position: 'top-right'
+                    })
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error('Application failed to be declined',{
                     position: 'top-right'
                 })
             }
@@ -214,7 +233,10 @@ const MemberApplications = ():JSX.Element => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseRejectDialog} color="primary" variant="contained">Cancel</Button>
-                    <Button variant="contained" color="error" startIcon={ <CancelOutlined/> } >Confirm Reject</Button>
+                    <Button variant="contained" color="error" 
+                    onClick={()=>{handleRejectMember(applicationToReject)}}
+                    startIcon={ <CancelOutlined/> } 
+                    >Confirm Reject</Button>
                 </DialogActions>
             </Dialog>
 
