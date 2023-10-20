@@ -176,6 +176,10 @@ const MemberSchema = new mongoose.Schema({
             message: "Membership status has to be one of: Approved, Not Approved,Declined"
         },
         default: "Not Approved"
+    },
+    password:{
+        type:String,
+        default: null
     }
     
 },{timestamps:true})
