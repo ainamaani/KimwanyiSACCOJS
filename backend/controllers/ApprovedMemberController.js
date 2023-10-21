@@ -13,7 +13,7 @@ const handleNewApprovedMemberLogin = async(req,res) =>{
         const imagePath = req.files['image'][0].path;
 
         // Get other data from the request body
-        const { member,password,passwordConfirm } = req.body;
+        const {password,passwordConfirm } = req.body;
 
         if(!member || !imagePath || !password || !passwordConfirm){
             throw new Error("All fields are required");
@@ -33,7 +33,7 @@ const handleNewApprovedMemberLogin = async(req,res) =>{
         const hash = await bcrypt.hash(password,salt);
 
         //Adding the object to the database
-        const newApprovedMemberLogin = await ApprovedMember.create({ member, profilePic:imagePath, password:hash });
+        const newApprovedMemberLogin = await ApprovedMember.create({ profilePic:imagePath, password:hash });
         if(newApprovedMemberLogin){
             return res.status(400).json(newApprovedMemberLogin);
         }

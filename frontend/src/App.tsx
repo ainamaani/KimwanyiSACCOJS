@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import Loans from './pages/Loans';
 import Transactions from './pages/Transactions';
 import Members from './pages/Members';
+import SetAccount from './pages/SetAccount';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/apply" element={<MemberApplicationPage />} />
+          <Route path="/setaccountdetails" element={<SetAccount/>} />
           <Route
             element={
               <Layout>

@@ -4,11 +4,6 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 
 const ApprovedMemberSchema = new mongoose.Schema({
-    member:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: Member,
-        required:true
-    },
     profilePic:{
         type: String,
         required:true
