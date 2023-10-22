@@ -10,12 +10,12 @@ const handleNewApprovedMemberLogin = async(req,res) =>{
     try {
 
         // Get the uploaded file path from the request object
-        const imagePath = req.files['image'][0].path;
+        const imagePath = req.files['profilePic'][0].path;
 
         // Get other data from the request body
         const {password,passwordConfirm } = req.body;
 
-        if(!member || !imagePath || !password || !passwordConfirm){
+        if(!imagePath || !password || !passwordConfirm){
             throw new Error("All fields are required");
         }
     
@@ -35,7 +35,7 @@ const handleNewApprovedMemberLogin = async(req,res) =>{
         //Adding the object to the database
         const newApprovedMemberLogin = await ApprovedMember.create({ profilePic:imagePath, password:hash });
         if(newApprovedMemberLogin){
-            return res.status(400).json(newApprovedMemberLogin);
+            return res.status(200).json(newApprovedMemberLogin);
         }
 
     } catch (error) {

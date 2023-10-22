@@ -1,5 +1,6 @@
 import { TextField, Typography,Button,Input } from "@mui/material";
 import { styled } from "@mui/system";
+import axios from "axios";
 import React,{useState,useEffect} from 'react';
 
 const StyledTextField = styled(TextField)({
@@ -32,9 +33,33 @@ const SetAccount = ():JSX.Element => {
         }
     }
 
-    const handleDetailsSubmit = (e:React.FormEvent<HTMLFormElement>) =>{
+    const handleDetailsSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
-        console.log(profilePic,password,passwordConfirm);
+        const formData = new FormData();
+        if(profilePic !== null){
+            formData.append("profilePic", profilePic);
+        }
+        formData.append("password",password);
+        formData.append("passwordConfirm",passwordConfirm);
+
+        try {
+            const setDetails = await axios.post('http://localhost:4343/api/approvedmembers/newlogin',
+                                    formData,
+                                    {
+                                        headers:{
+                                            'Content-Type':'multipart/form-data'
+                                        }
+                                    }       
+                                    ); 
+            if(setDetails.status === 200){
+                console.log(setDetails.data);
+                setProfilePic(null);
+                setPassword('');
+                setPasswordConfirm('');
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return ( 
