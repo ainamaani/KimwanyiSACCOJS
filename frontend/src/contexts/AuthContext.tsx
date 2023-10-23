@@ -1,7 +1,7 @@
 import React,{useState,createContext,useReducer, ReactNode,useEffect} from 'react';
 
 interface AuthState{
-    user: any | null;
+    member: any | null;
 }
 
 interface AuthAction{
@@ -15,23 +15,23 @@ interface AuthContextType extends AuthState{
 }
 
 export const AuthContext = createContext<AuthContextType>({
-    user:null,
+    member:null,
     dispatch: () => {},
-    state: {user: null}
+    state: {member: null}
 });
 
 export const authReducer = (state : AuthState | undefined,action : AuthAction):AuthState=>{
     switch(action.type){
         case 'LOGIN':
             return {
-                user: action.payload
+                member: action.payload
             }
         case 'LOGOUT':
             return {
-                user: null
+                member: null
             }
         default:
-            return state || {user:[]};
+            return state || {member:[]};
     }
 }
 
@@ -40,14 +40,14 @@ interface AuthContextProviderProps{
 }
 const AuthContextProvider = ({children}:AuthContextProviderProps) => {
     const [state,dispatch] = useReducer(authReducer,{
-        user:null
+        member:null
     });
     //check local storage for the user when the component first renders
     useEffect(()=>{
-        const userString = localStorage.getItem('user');
+        const userString = localStorage.getItem('member');
         if(userString){
-            const user = JSON.parse(userString);
-            dispatch({ type:'LOGIN',payload:user })
+            const member = JSON.parse(userString);
+            dispatch({ type:'LOGIN',payload:member })
         }
     },[]);
 

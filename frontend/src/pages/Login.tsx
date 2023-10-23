@@ -37,6 +37,10 @@ const Login = ():JSX.Element => {
                             }
             )
             if(response.status === 200){
+                //save the user in local storage
+                localStorage.setItem('member',JSON.stringify(response.data));
+
+                //update the auth api context
                 dispatch({type: 'LOGIN', payload: response.data});
                 setEmail('');
                 setPassword('');
