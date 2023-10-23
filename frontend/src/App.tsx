@@ -10,6 +10,8 @@ import Loans from './pages/Loans';
 import Transactions from './pages/Transactions';
 import Members from './pages/Members';
 import SetAccount from './pages/SetAccount';
+import Login from './pages/Login';
+import Home from './pages/Home';
 
 
 function App() {
@@ -18,8 +20,10 @@ function App() {
       <ToastContainer/>
       <BrowserRouter>
         <Routes>
+          <Route path='/' element={<Home/>} />
           <Route path="/apply" element={<MemberApplicationPage />} />
           <Route path="/setaccountdetails" element={<SetAccount/>} />
+          <Route path="/login" element={<Login/>} />
           <Route
             element={
               <Layout>
