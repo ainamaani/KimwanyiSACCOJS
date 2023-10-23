@@ -2,6 +2,7 @@ const Member = require('../models/Member');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
 
 
 //SEND EMAIL FUNCTION
@@ -35,14 +36,19 @@ const sendEmail = (toEmail,emailSubject,emailMessage) =>{
 }
 
 const handleMemberApplication = async(req,res) =>{
-    // const {firstName,lastName,gender,dateOfBirth,residentialAddress,email,phoneNumber,
-    // employmentStatus,currentOccupation,employerName,employerEmail,employerPhoneNumber,
-    // nextOfKin,nextOfKinEmail,nextOfKinPhoneNumber,membershipStatus} = req.body;
+    const {firstName,lastName,gender,dateOfBirth,residentialAddress,email,phoneNumber,
+    employmentStatus,currentOccupation,employerName,employerEmail,employerPhoneNumber,
+    nextOfKin,nextOfKinEmail,nextOfKinPhoneNumber,membershipStatus} = req.body;
 
-    const memberData = req.body;
+    // generate salt to be used to hash
+    const salt = await bcrypt.genSalt(10);
+    // hash the phone number to make the password
+    const pword = await bcrypt.hash(phoneNumber,salt);
 
     try {
-        const memberApplication = await Member.create(memberData);
+        const memberApplication = await Member.create({ firstName,lastName,gender,dateOfBirth,residentialAddress,email,phoneNumber,
+            employmentStatus,currentOccupation,employerName,employerEmail,employerPhoneNumber,
+            nextOfKin,nextOfKinEmail,nextOfKinPhoneNumber,membershipStatus, password:pword });
         if(memberApplication){
             return res.status(200).json(memberApplication);
         }else{
