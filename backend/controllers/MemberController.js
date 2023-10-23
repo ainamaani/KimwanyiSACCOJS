@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 //SEND EMAIL FUNCTION
@@ -245,6 +246,45 @@ const getApprovedMembers = async(req,res) =>{
     }
 }
 
+//Function to create the jsonwebtoken
+const createToken = (_id) =>{
+    return jwt.sign({_id}, process.env.SECRET, {expiresIn: '3d'});
+}
+
+// member login
+const memberLogin = async(req,res) =>{
+    // destructure the email and password properties off the request body
+    const { email, password } = req.body; 
+    // validation
+    if(!email || !password){
+        return res.status(400).json({error : "All fields are required"});
+    }
+
+    // retrieve user corresponding to the email
+    const member = await Member.findOne({email});
+    if(!member){
+        return res.status(400).json({ error: "Incorrect credentials" });
+    }
+    if(member.membershipStatus === "Not Approved"){
+        return res.status(400).json({ error: "Your SACCO membership hasn't been approved yet" });
+    }
+    if(member.membershipStatus === "Declined"){
+        return res.status(400).json({ error: "Sorry!! Your SACCO membership was declined" });
+    }
+
+    const pwordMatches = await bcrypt.compare(password, member.password);
+    if(!pwordMatches){
+        return res.status(400).json({ error: "Incorrect credentials"});
+    }else{
+        // create a token for a logged in user
+        const token = createToken(member._id);
+        const firstName = member.firstName;
+
+        // return the token and other details when the credentials match
+        return res.status(200).json({ token ,email ,firstName});
+    }
+}
+
 module.exports = {
     handleMemberApplication,
     getMemberData,
@@ -253,5 +293,6 @@ module.exports = {
     declineApplication,
     approveMembership,
     deleteMember,
-    getApprovedMembers
+    getApprovedMembers,
+    memberLogin
 }
