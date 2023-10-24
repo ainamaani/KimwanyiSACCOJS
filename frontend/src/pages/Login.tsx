@@ -21,6 +21,7 @@ const StyledButton = styled(Button)({
 const Login = ():JSX.Element => {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('');
+    const [error,setError] = useState<string>('');
     const {dispatch} = useAuthContext();
     const navigate = useNavigate();
 
@@ -44,10 +45,16 @@ const Login = ():JSX.Element => {
                 dispatch({type: 'LOGIN', payload: response.data});
                 setEmail('');
                 setPassword('');
+                setError('');
                 navigate('/');
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error : any) {
+            if(error.response && error.response.data && error.response.data.error){
+                // set error in state
+                setError(error.response.data.error);
+            }else{
+                console.log(error);
+            }
         }   
     }
 
@@ -69,6 +76,7 @@ const Login = ():JSX.Element => {
                     onChange={(e)=>{setPassword(e.target.value)}}
                 />
                 <StyledButton variant="contained" type="submit">Login</StyledButton>
+                { error && <span style={{color:"red"}}>{error}</span>  }
             </form>
         </div>
 
