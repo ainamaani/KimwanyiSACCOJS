@@ -1,7 +1,8 @@
-import { Typography } from "@mui/material";
+import { Button, Typography, TextField } from "@mui/material";
 import React,{useState,useEffect} from 'react';
 import useAuthContext from "../hooks/UseAuthContext";
 import axios from 'axios';
+import { styled } from "@mui/styles";
 
 interface LoggedInUser{
     _id:string,
@@ -22,6 +23,18 @@ interface LoggedInUser{
     nextOfKinPhoneNumber:string,
     membershipStatus:string
 }
+
+const StyledTextField = styled(TextField)({
+    marginTop: '20px',
+    marginBottom: '20px',
+    display: 'block'
+})
+
+const StyledButton = styled(Button)({
+    marginTop: '20px',
+    marginBottom: '20px',
+    display: 'block'
+})
 
 const Profile = ():JSX.Element => {
     const {member} = useAuthContext();
@@ -53,9 +66,10 @@ const Profile = ():JSX.Element => {
         fetchLoggedInUserData();
     },[]);
 
-    useEffect(()=>{
-        console.log(loggedInMemberData);
-    },[]);
+    // function for changing password
+    const handleChangePassword = async() => {
+
+    }
     
     return ( 
         <div>
@@ -69,18 +83,35 @@ const Profile = ():JSX.Element => {
                     <Typography variant="body1">Email: {loggedInMemberData.email}</Typography>
                     <Typography variant="body1">Phone number: {loggedInMemberData.phoneNumber}</Typography>
                     <Typography variant="body1">Employment Status: {loggedInMemberData.employmentStatus}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.currentOccupation ? loggedInMemberData.currentOccupation : "None"}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.em ? loggedInMemberData.currentOccupation : "None"}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.currentOccupation ? loggedInMemberData.currentOccupation : "None"}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.currentOccupation ? loggedInMemberData.currentOccupation : "None"}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.firstName}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.firstName}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.firstName}</Typography>
-                    <Typography variant="body1">First Name: {loggedInMemberData.firstName}</Typography>
+                    <Typography variant="body1">Current Occupation: {loggedInMemberData.currentOccupation ? loggedInMemberData.currentOccupation : "None"}</Typography>
+                    <Typography variant="body1">Employer Name: {loggedInMemberData.employerName ? loggedInMemberData.employerName : "None"}</Typography>
+                    <Typography variant="body1">Employer Email: {loggedInMemberData.employerEmail ? loggedInMemberData.employerEmail : "None"}</Typography>
+                    <Typography variant="body1">Employer Phone number: {loggedInMemberData.employerPhoneNumber ? loggedInMemberData.employerPhoneNumber : "None"}</Typography>
+                    <Typography variant="body1">Next of kin: {loggedInMemberData.nextOfKin}</Typography>
+                    <Typography variant="body1">Next of kin Email: {loggedInMemberData.nextOfKinEmail}</Typography>
+                    <Typography variant="body1">Next of kin Phone Number: {loggedInMemberData.nextOfKinPhoneNumber}</Typography>
+                    
                 </div>
             ):(
                 <Typography>Loading...</Typography>
             )}
+
+            <StyledButtonButton variant="contained">Edit details</StyledButtonButton>
+
+            <Typography>Change password</Typography>
+            <form noValidate autoComplete="off" onSubmit={handleChangePassword}>
+                <StyledTextField 
+                label="Cuurent password"
+                fullWidth required
+                variant="outlined"
+                />
+                <StyledTextField 
+                label="New password"
+                fullWidth required
+                variant="outlined"
+                />
+                <StyledButton variant="contained" type="submit">Change password</StyledButton>
+            </form>
         </div>
      );
 }

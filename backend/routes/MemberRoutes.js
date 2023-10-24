@@ -2,7 +2,7 @@ const express = require("express");
 const { handleMemberApplication,getMemberData,
     getSingleMember,updateMemberData,declineApplication,
     approveMembership,deleteMember,getApprovedMembers, memberLogin,
-    loggedInUserData } = require("../controllers/MemberController");
+    loggedInUserData,changePassword } = require("../controllers/MemberController");
 const router = express.Router();
 
 
@@ -25,6 +25,8 @@ router.get('/decline/:id', declineApplication);
 router.get('/approve/:id', approveMembership);
 
 router.delete('/delete/:id', deleteMember);
+
+router.post('/changepassword/:id', changePassword);
 
 
 module.exports = router

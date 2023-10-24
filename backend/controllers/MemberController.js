@@ -300,6 +300,32 @@ const loggedInUserData = async(req,res) =>{
     }
 }
 
+
+const changePassword = async(req,res) =>{
+    const { id } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(400).json({ error: "The id provided is not valid" });
+    }
+    const { currentPassword, newPassword } = req.body;
+    try {
+        const member = await Member.findById(id);
+        if(member){
+            const currentPwordMatch = await bcrypt.compare(currentPassword, member.password);
+            if(!currentPwordMatch){
+                res.status(400).json({ error: "Enter the correct current password" });
+            }else{
+                member.password = newPassword;
+                await member.save({ validateBeforeSave: false });
+                return res.status(200).json({ message: "Password changed successfully" });
+            }
+        }else{
+            return res.status(400).json({ error: "Member with that id doesn't exist"});
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     handleMemberApplication,
     getMemberData,
@@ -310,5 +336,6 @@ module.exports = {
     deleteMember,
     getApprovedMembers,
     memberLogin,
-    loggedInUserData
+    loggedInUserData,
+    changePassword
 }
