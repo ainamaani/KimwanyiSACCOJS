@@ -285,6 +285,21 @@ const memberLogin = async(req,res) =>{
     }
 }
 
+const loggedInUserData = async(req,res) =>{
+    const {email } = req.params;
+    try {
+        // fetch user corresponding to the email on the request body
+        const loggedInUser = await Member.find({ email });
+        if(loggedInUser){
+            res.status(200).json(loggedInUser);
+        }else{
+            res.status(400).json({ error: "Could not fetch the logged in user details" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     handleMemberApplication,
     getMemberData,
@@ -294,5 +309,6 @@ module.exports = {
     approveMembership,
     deleteMember,
     getApprovedMembers,
-    memberLogin
+    memberLogin,
+    loggedInUserData
 }
