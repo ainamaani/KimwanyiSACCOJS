@@ -12,6 +12,8 @@ import Members from './pages/Members';
 import SetAccount from './pages/SetAccount';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import LoanRequest from './pages/LoanRequest';
+import LoanApplications from './pages/LoanApplications';
 
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/applications" element={<MemberApplications />} />
             <Route path="/members" element={<Members />}/>
+            <Route path="/requestloan" element={<LoanRequest />} />
+            <Route path="/loanrequests" element={<LoanApplications />} />
           </Route>
         </Routes>
       </BrowserRouter>
