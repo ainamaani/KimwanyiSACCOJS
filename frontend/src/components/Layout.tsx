@@ -5,6 +5,8 @@ import { Drawer, Typography, List, ListItem, ListItemIcon,ListItemText,
 import { useNavigate,useLocation } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/system";
+import React,{useState} from 'react';
+
 
 const drawerWidth = 260;
 
@@ -63,7 +65,19 @@ const menuItems = [
     {
         text:'Loans',
         icon: <CreditCardOutlined color="primary" />,
-        path:'/loans'
+        path:'/loans',
+        subItems: [
+            {
+                text:'Request Loan',
+                icon: <AssignmentIndOutlined color="primary" />,
+                path:'/requestloan'
+            },
+            {
+                text:'View Loan requests ',
+                icon: <AssignmentIndOutlined color="primary" />,
+                path:'/loanrequests'
+            }
+        ]
     },
     {
         text:'Transactions',
@@ -92,6 +106,12 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
     const location = useLocation();
     const classes = useStyles();
 
+    const [showLoansSubMenu, setShowLoansSubMenu] = useState<boolean>(false);
+
+    const handleLoansClick = () =>{
+        setShowLoansSubMenu(!showLoansSubMenu);
+    }
+
     return ( 
         <div className="root" style={{display:'flex'}}>
             {/* AppBar */}
@@ -119,19 +139,41 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
                 </div>
                 {/* Links */}
                 <List>
-                    {
-                        menuItems.map(item=>(
-                            <ListItem
-                            key={item.text}
-                            button
-                            onClick={()=> navigate(item.path)}
-                            className={location.pathname === item.path ? classes.active : undefined }
-                            >
-                                <ListItemIcon>{item.icon}</ListItemIcon>
-                                <ListItemText secondary={item.text} />
-                            </ListItem>
-                        ))
-                    }
+                    {menuItems.map(item => (
+                        <div key={item.text}>
+                            {item.subItems ? (
+                                // Render sub-menu items
+                                <>
+                                    <ListItem button 
+                                    onClick={handleLoansClick}>
+                                        <ListItemIcon>{item.icon}</ListItemIcon>
+                                        <ListItemText secondary={item.text} />
+                                    </ListItem>
+                                    {showLoansSubMenu && (
+                                        <List style={{ marginLeft:"20px" }}>
+                                            {item.subItems.map(subItem => (
+                                                <ListItem
+                                                    key={subItem.text}
+                                                    button
+                                                    onClick={() => navigate(subItem.path)}
+                                                    className={location.pathname === subItem.path ? classes.active : undefined}
+                                                >
+                                                    <ListItemIcon>{subItem.icon}</ListItemIcon>
+                                                    <ListItemText secondary={subItem.text} />
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    )}
+                                </>
+                            ) : (
+                                // Render top-level menu items
+                                <ListItem button onClick={() => navigate(item.path)} className={location.pathname === item.path ? classes.active : undefined}>
+                                    <ListItemIcon>{item.icon}</ListItemIcon>
+                                    <ListItemText secondary={item.text} />
+                                </ListItem>
+                            )}
+                        </div>
+                    ))}
                 </List>
             </Drawer>
             <div className={classes.page}>
