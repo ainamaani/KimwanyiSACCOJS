@@ -45,6 +45,8 @@ const Profile = ():JSX.Element => {
     // change password states
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
+    // error states
+    const [error, setError] = useState<string>('');
 
     // fetch data for the currently logged in user
     useEffect(()=>{
@@ -74,6 +76,7 @@ const Profile = ():JSX.Element => {
     // function for changing password
     const handleChangePassword = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError('');
         try {
             const response = await axios.post(`http://localhost:4343/api/members/changepassword/${loggedInMemberData?._id}`,
                                     JSON.stringify({ currentPassword,newPassword }),{
@@ -90,8 +93,15 @@ const Profile = ():JSX.Element => {
                     position: "top-right"
                 });
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error : any) {
+            if(error.response && error.response.data && error.response.data.error ){
+                // set error
+                setError(error.response.data.error);
+                // send feedback
+                toast.error("Password change failed",{
+                    position:"top-right"
+                })
+            }
         } 
     }
     
@@ -141,6 +151,7 @@ const Profile = ():JSX.Element => {
                     onChange={(e)=>{setNewPassword(e.target.value)}}
                 />
                 <StyledButton variant="contained" type="submit">Change password</StyledButton>
+                { error && <span style={{color:"red"}}>{error}</span> }
             </form>
         </div>
      );
