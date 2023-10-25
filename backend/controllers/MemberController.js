@@ -307,6 +307,9 @@ const changePassword = async(req,res) =>{
         return res.status(400).json({ error: "The id provided is not valid" });
     }
     const { currentPassword, newPassword } = req.body;
+    if(!currentPassword || !newPassword){
+        return res.status(400).json({ error: "Both fields are required" });
+    }
     try {
         const member = await Member.findById(id);
         if(member){
@@ -314,7 +317,12 @@ const changePassword = async(req,res) =>{
             if(!currentPwordMatch){
                 res.status(400).json({ error: "Enter the correct current password" });
             }else{
-                member.password = newPassword;
+                // generate salt for the new password
+                const salt = await bcrypt.genSalt(10);
+                // generate hash for the new password
+                const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+                member.password = hashedNewPassword;
                 await member.save({ validateBeforeSave: false });
                 return res.status(200).json({ message: "Password changed successfully" });
             }

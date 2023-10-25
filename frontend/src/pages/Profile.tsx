@@ -3,6 +3,8 @@ import React,{useState,useEffect} from 'react';
 import useAuthContext from "../hooks/UseAuthContext";
 import axios from 'axios';
 import { styled } from "@mui/styles";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface LoggedInUser{
     _id:string,
@@ -40,6 +42,9 @@ const Profile = ():JSX.Element => {
     const {member} = useAuthContext();
 
     const [loggedInMemberData, setLoggedInMemberData] = useState<LoggedInUser | null>(null);
+    // change password states
+    const [currentPassword, setCurrentPassword] = useState<string>('');
+    const [newPassword, setNewPassword] = useState<string>('');
 
     // fetch data for the currently logged in user
     useEffect(()=>{
@@ -67,8 +72,27 @@ const Profile = ():JSX.Element => {
     },[]);
 
     // function for changing password
-    const handleChangePassword = async() => {
-
+    const handleChangePassword = async(e:React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post(`http://localhost:4343/api/members/changepassword/${loggedInMemberData?._id}`,
+                                    JSON.stringify({ currentPassword,newPassword }),{
+                                        headers:{
+                                            'Content-Type':'application/json'
+                                        }
+                                    }
+            );
+            if(response.status === 200){
+                console.log(response);
+                setCurrentPassword('');
+                setNewPassword('');
+                toast.success('Password changed sucessfully',{
+                    position: "top-right"
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        } 
     }
     
     return ( 
@@ -96,19 +120,25 @@ const Profile = ():JSX.Element => {
                 <Typography>Loading...</Typography>
             )}
 
-            <StyledButtonButton variant="contained">Edit details</StyledButtonButton>
+            <StyledButton variant="contained">Edit details</StyledButton>
 
             <Typography>Change password</Typography>
             <form noValidate autoComplete="off" onSubmit={handleChangePassword}>
                 <StyledTextField 
-                label="Cuurent password"
-                fullWidth required
-                variant="outlined"
+                    label="Current password"
+                    fullWidth required
+                    variant="outlined"
+                    value={currentPassword}
+                    type="password"
+                    onChange={(e)=>{setCurrentPassword(e.target.value)}}
                 />
                 <StyledTextField 
-                label="New password"
-                fullWidth required
-                variant="outlined"
+                    label="New password"
+                    fullWidth required
+                    variant="outlined"
+                    value={newPassword}
+                    type="password"
+                    onChange={(e)=>{setNewPassword(e.target.value)}}
                 />
                 <StyledButton variant="contained" type="submit">Change password</StyledButton>
             </form>
