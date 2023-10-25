@@ -6,6 +6,7 @@ require('dotenv').config();
 const cors = require("cors");
 const MemberRoutes = require("./routes/MemberRoutes");
 const ApprovedMemberRoutes = require("./routes/ApprovedMemberRoutes");
+const LoanRoutes = require("./routes/LoanRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use((req,res,next)=>{
 //routes
 app.use('/api/members',MemberRoutes);
 app.use('/api/approvedmembers',ApprovedMemberRoutes);
+app.use('/api/loans',LoanRoutes);
 
 //connect to mongo db
 mongoose.connect(process.env.dbURI)
