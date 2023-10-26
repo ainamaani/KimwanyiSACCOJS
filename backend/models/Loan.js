@@ -9,14 +9,14 @@ const LoanSchema = new mongoose.Schema({
     },
     amountRequested:{
         type:String,
-        required:[true, 'Amount requeted is required']
+        required:[true, 'Amount being requested is required']
     },
     prefferedPaymentSchedule:{
         type:String,
         required:[true, 'Preffered payment schedule is required'],
         enum:{
-            values: ['Monthly, Quarterly, Yearly'],
-            message: "The schedule must be one of 'monthly', 'quarterly' or 'yearly'"
+            values: ["Monthly", "Quarterly", "Yearly"],
+            message: "The schedule must be one of 'Monthly', 'Quarterly' or 'Yearly'"
         } 
     },
     loanPurpose:{
@@ -33,7 +33,8 @@ const LoanSchema = new mongoose.Schema({
     },
     otherSourcesOfIncome:{
         type:String,
-        required:[true, 'Other sources of income required']
+        required:[true, 'Other sources of income required'],
+        default: 'None'
     },
     guarantorName:{
         type:String,
@@ -41,7 +42,7 @@ const LoanSchema = new mongoose.Schema({
     },
     guarantorEmail:{
         type:String,
-        required:true,
+        required:[true, 'Guarantor Name is required'],
         validate: {
             validator: async function (value){
                 // Check if the email format is valid
@@ -54,7 +55,7 @@ const LoanSchema = new mongoose.Schema({
     },
     guarantorPhoneNumber:{
         type:String,
-        required:true,
+        required:[true, 'Guarantor Phone Number is required'],
         validate: {
             validator: async function(value){
                 // Check if the phone number has at least 10 digits

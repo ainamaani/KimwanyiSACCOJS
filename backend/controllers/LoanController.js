@@ -4,16 +4,16 @@ const Loan = require('../models/Loan');
 const handleLoanRequest = async(req,res) =>{
     const { email } = req.params;
     const { amountRequested,prefferedPaymentSchedule,loanPurpose,
-        loanType,monthlyIncome,otherSourcesOfIncome,guarantorName,guarantorEmail } = req.body;
+        loanType,monthlyIncome,otherSourcesOfIncome,guarantorName,guarantorEmail,guarantorPhoneNumber } = req.body;
 
 
     try {
-        const member = await Member.find({ email });
+        const member = await Member.findOne({ email });
         if(member){
             const memberApplying = member._id;
 
             const loanApplicant = await Loan.create({ amountRequested,prefferedPaymentSchedule,loanPurpose,
-                loanType,monthlyIncome,otherSourcesOfIncome,guarantorName,guarantorEmail,member : memberApplying });
+                loanType,monthlyIncome,otherSourcesOfIncome,guarantorName,guarantorEmail,guarantorPhoneNumber,member : memberApplying });
 
             if(loanApplicant){
                 return res.status(200).json(loanApplicant);
@@ -24,7 +24,20 @@ const handleLoanRequest = async(req,res) =>{
             return res.status(400).json({ error: "Member trying to apply doesn't exist" });
         }
     } catch (error) {
-        return res.status(400).json({ error: error.message });
+          // Check if the error is a validation error
+          if (error.name === 'ValidationError' || error.code === 11000) {
+            const errors = {};
+    
+            // Iterate through the validation errors and build the errors object
+            for (const field in error.errors) {
+            errors[field] = error.errors[field].message;
+            }
+    
+            return res.status(400).json({ errors });
+        }else{
+            return res.status(400).json({ error: error.message });
+        }
+        
     }
 }
 
