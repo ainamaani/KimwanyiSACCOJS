@@ -41,6 +41,21 @@ const handleLoanRequest = async(req,res) =>{
     }
 }
 
+const getLoanRequests = async(req,res) =>{
+    try {
+        // fetch all the loan requests
+        const requests = await Loan.find({}).sort({ createdAt: -1 }).populate('member');
+        if(requests){
+            return res.status(200).json(requests);
+        }else{
+            return res.status(400).json({ error: "Failed to fetch all the loan requests" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
-    handleLoanRequest
+    handleLoanRequest,
+    getLoanRequests
 }
