@@ -64,6 +64,14 @@ const LoanSchema = new mongoose.Schema({
                 }
             }
         }
+    },
+    requestStatus:{
+        type:String,
+        default: "Pending",
+        enum: {
+            values: ["Approved", "Denied" ,"Pending"],
+            message: "The loan request status must be one of the values 'Approved','Denied' and 'Pending' "
+        }
     }
     
 
