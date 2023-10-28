@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import { ApplicationsContextProvider } from './contexts/MemberApplicationsContext';
 import AuthContextProvider from './contexts/AuthContext';
+import { ThemeProvider } from '@mui/material';
+import theme from './components/Theme';
 
 
 const root = ReactDOM.createRoot(
@@ -13,7 +15,9 @@ root.render(
   <React.StrictMode>
     <AuthContextProvider>
       <ApplicationsContextProvider>
-        <App />
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
       </ApplicationsContextProvider>
     </AuthContextProvider>
   </React.StrictMode>

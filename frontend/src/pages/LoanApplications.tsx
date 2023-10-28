@@ -1,4 +1,6 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, 
+    IconButton, Paper, Table, TableBody, TableCell, TableContainer, 
+    TableHead, TablePagination, TableRow, Tooltip, Typography,CircularProgress } from "@mui/material";
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
 import { VisibilityRounded } from "@mui/icons-material";
@@ -137,7 +139,9 @@ const LoanApplications = ():JSX.Element => {
                     />
                 </TableContainer>
             ):(
-                <Typography>Loading....</Typography>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
+                    <CircularProgress />
+                </div>
             )}
             <Dialog
                 open={isViewDialogOpen}

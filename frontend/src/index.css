@@ -3,5 +3,30 @@
 body{
   font-family: 'Poppins',sans-serif;
   margin: 0;
-  background: #f1f1f1;
+  background: #f2eeee;
 }
+
+/* APPLICATION PAGE */
+.container{
+  margin-left: 100px !important;
+  margin-right: 100px !important;
+  position: relative;
+  left: 15%;
+  right: 15%;
+}
+
+form{
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  margin: 15px;
+}
+
+.profile{
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  margin: 15px;
+}
+
+

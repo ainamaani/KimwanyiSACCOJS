@@ -1,4 +1,4 @@
-import { Button, Typography, TextField } from "@mui/material";
+import { Button, Typography, TextField, CircularProgress } from "@mui/material";
 import React,{useState,useEffect} from 'react';
 import useAuthContext from "../hooks/UseAuthContext";
 import axios from 'axios';
@@ -71,7 +71,7 @@ const Profile = ():JSX.Element => {
             }
         }
         fetchLoggedInUserData();
-    },[]);
+    },[member]);
 
     // function for changing password
     const handleChangePassword = async(e:React.FormEvent<HTMLFormElement>) => {
@@ -106,7 +106,8 @@ const Profile = ():JSX.Element => {
     }
     
     return ( 
-        <div>
+        <div >
+            <div className="profile">
             <Typography variant="h4">Your Member details</Typography>
             {loggedInMemberData  ? (
                 <div>
@@ -127,17 +128,26 @@ const Profile = ():JSX.Element => {
                     
                 </div>
             ):(
-                <Typography>Loading...</Typography>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
+                    <CircularProgress />
+                </div>
             )}
 
             <StyledButton variant="contained">Edit details</StyledButton>
+            </div>
 
-            <Typography>Change password</Typography>
+            
             <form noValidate autoComplete="off" onSubmit={handleChangePassword}>
+            <Typography variant="body1">Change password</Typography>
                 <StyledTextField 
                     label="Current password"
                     fullWidth required
                     variant="outlined"
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={currentPassword}
                     type="password"
                     onChange={(e)=>{setCurrentPassword(e.target.value)}}
@@ -147,10 +157,20 @@ const Profile = ():JSX.Element => {
                     fullWidth required
                     variant="outlined"
                     value={newPassword}
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     type="password"
                     onChange={(e)=>{setNewPassword(e.target.value)}}
                 />
-                <StyledButton variant="contained" type="submit">Change password</StyledButton>
+                <StyledButton variant="contained" 
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    display: 'block'  
+                 }}
+                type="submit">Change password</StyledButton>
                 { error && <span style={{color:"red"}}>{error}</span> }
             </form>
         </div>

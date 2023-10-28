@@ -118,6 +118,11 @@ const MemberApplicationPage = ():JSX.Element => {
             label="Current occupation"
             variant="outlined"
             fullWidth
+            sx={{marginTop: 2, 
+                marginBottom: 2, 
+                width: 800,
+
+             }}
             error={!!errors.currentOccupation}  // two exlamations marks to convert the string to boolean
             required={employmentStatus === "Employed" || employmentStatus === "Self Employed"}
             value={currentOccupation}
@@ -130,15 +135,21 @@ const MemberApplicationPage = ():JSX.Element => {
     );
 
     return (
-        <StyledPageContent>
-            <Typography variant="h3">Kimwanyi SACCO Member Registration Form</Typography>
+        <div>
+            <StyledPageContent>
             <form noValidate autoComplete="off" onSubmit={handleMemberApplication}>
+            <Typography variant="h4" style={{justifyContent:"center"}}>Kimwanyi SACCO Member Application Form</Typography>
                 {/* SECTION 1 */}
-                <Typography variant="h4">Personal Data</Typography>
+                <Typography variant="h5">Personal Data</Typography>
                 <StyledTextField
                 label="First name"
                 variant="outlined"
                 fullWidth required
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 value={firstName}
                 onChange={(e)=> {setFirstName(e.target.value)}}
                 error={!!errors.firstName} // two exlamations marks to convert the string to boolean
@@ -151,6 +162,11 @@ const MemberApplicationPage = ():JSX.Element => {
                 label="Last name"
                 variant="outlined"
                 fullWidth required
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 value={lastName}
                 onChange={(e)=> {setLastName(e.target.value)}}
                 error={!!errors.lastName}  // two exlamations marks to convert the string to boolean
@@ -173,6 +189,11 @@ const MemberApplicationPage = ():JSX.Element => {
                     type="date"
                     variant="outlined"
                     fullWidth required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 800,
+
+                     }}
                     value={dateOfBirth ? dateOfBirth.toISOString().split('T')[0] : ''} // Convert the date to a string
                     InputLabelProps={{
                         shrink: true,
@@ -194,6 +215,11 @@ const MemberApplicationPage = ():JSX.Element => {
                 label="Residential Address" 
                 variant="outlined" 
                 fullWidth required 
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 value={residentialAddress}
                 onChange={(e)=> {setResidentialAddress(e.target.value)}}
                 error={!!errors.residentialAddress}  // two exlamations marks to convert the string to boolean
@@ -205,6 +231,11 @@ const MemberApplicationPage = ():JSX.Element => {
                 <StyledTextField 
                 label="Email" 
                 variant="outlined" 
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 fullWidth required 
                 value={email}
                 onChange={(e)=> {setEmail(e.target.value)}}
@@ -218,6 +249,11 @@ const MemberApplicationPage = ():JSX.Element => {
                 label="Phone number"
                 variant="outlined"
                 fullWidth required
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 value={phoneNumber}
                 onChange={(e)=> {setPhoneNumber(e.target.value)}}
                 error={!!errors.phoneNumber}  // two exlamations marks to convert the string to boolean
@@ -227,7 +263,7 @@ const MemberApplicationPage = ():JSX.Element => {
                     <span style={{color:'red'}}>{errors.phoneNumber}</span>
                 )}
                 {/* SECTION 2 */}
-                <Typography variant="h4">Employment details</Typography>
+                <Typography variant="h5">Employment details</Typography>
                 <StyledRadioGroup value={employmentStatus} onChange={(e)=>{setEmploymentStatus(e.target.value)}} > 
                     <FormControlLabel
                         value="Employed"
@@ -258,6 +294,11 @@ const MemberApplicationPage = ():JSX.Element => {
                         label="Employer name"
                         variant="outlined"
                         fullWidth
+                        sx={{marginTop: 2, 
+                            marginBottom: 2, 
+                            width: 800,
+    
+                         }}
                         value={employerName}
                         error={!!errors.employerName}  // two exlamations marks to convert the string to boolean
                         onChange={(e)=> {setEmployerName(e.target.value)}}
@@ -270,36 +311,51 @@ const MemberApplicationPage = ():JSX.Element => {
                         label="Employer email"
                         variant="outlined"
                         fullWidth
+                        sx={{marginTop: 2, 
+                            marginBottom: 2, 
+                            width: 800,
+    
+                         }}
                         value={employerEmail}
                         error={!!errors.employerEmail}  // two exlamations marks to convert the string to boolean
                         onChange={(e)=> {setEmployerEmail(e.target.value)}}
                         required={employmentStatus === "Employed"}
                         />
                         { errors.employerEmail && (
-                             <span style={{color:'red'}}>{errors.employerEmail}</span>
+                            <span style={{color:'red'}}>{errors.employerEmail}</span>
                         )}
                         <StyledTextField
                         label="Employer Phone number"
                         variant="outlined"
                         fullWidth
+                        sx={{marginTop: 2, 
+                            marginBottom: 2, 
+                            width: 800,
+    
+                         }}
                         value={employerPhoneNumber}
                         error={!!errors.employerPhoneNumber}  // two exlamations marks to convert the string to boolean
                         onChange={(e)=> {setEmployerPhoneNumber(e.target.value)}}
                         required={employmentStatus === "Employed"}
                         />
                         { errors.employerPhoneNumber && (
-                             <span style={{color:'red'}}>{errors.employerPhoneNumber}</span>
+                            <span style={{color:'red'}}>{errors.employerPhoneNumber}</span>
                         )}
                     </>
                 
                 )}
                 
                 {/* SECTION 3 */}
-                <Typography variant="h4">Next of kin details</Typography>
+                <Typography variant="h5">Next of kin details</Typography>
                 <StyledTextField
                 label="Next of Kin"
                 variant="outlined"
                 fullWidth required
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 value={nextOfKin}
                 onChange={(e)=> {setNextOfKin(e.target.value)}}
                 error={!!errors.nextOfKin}  // two exlamations marks to convert the string to boolean
@@ -312,6 +368,11 @@ const MemberApplicationPage = ():JSX.Element => {
                 label="Next of Kin Email"
                 variant="outlined"
                 fullWidth required
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 value={nextOfKinEmail}
                 onChange={(e)=> {setNextOfKinEmail(e.target.value)}}
                 error={!!errors.nextOfKinEmail}  // two exlamations marks to convert the string to boolean
@@ -324,6 +385,11 @@ const MemberApplicationPage = ():JSX.Element => {
                 label="Next of Kin Phone number"
                 variant="outlined"
                 fullWidth required
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    width: 800,
+
+                 }}
                 value={nextOfKinPhoneNumber}
                 onChange={(e)=> {setNextOfKinPhoneNumber(e.target.value)}}
                 error={!!errors.nextOfKinPhoneNumber}  // two exlamations marks to convert the string to boolean
@@ -336,6 +402,7 @@ const MemberApplicationPage = ():JSX.Element => {
                 >Apply</StyledButton>
             </form>
         </StyledPageContent>
+        </div>
     );
 };
 

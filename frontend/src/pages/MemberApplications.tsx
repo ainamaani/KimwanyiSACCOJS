@@ -1,4 +1,7 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, 
+    DialogTitle, IconButton, Paper, Table, TableBody, TableCell, 
+    TableContainer, TableHead, TablePagination, TableRow, Tooltip, 
+    Typography, CircularProgress } from "@mui/material";
 import { useEffect,useState } from "react";
 import axios from "axios";
 import useMemberApplicationContext from "../hooks/UseMemberApplicationContext";
@@ -213,9 +216,9 @@ const MemberApplications = ():JSX.Element => {
                     />
                 </TableContainer>
             ):(
-                <Typography variant="h5">
-                    Loadinggg....
-                </Typography>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
+                    <CircularProgress />
+                </div>
             )}
             {/* Reject dialog */}
             <Dialog

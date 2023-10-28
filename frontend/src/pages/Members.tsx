@@ -1,5 +1,5 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, 
-    TableHead, TableRow, Typography, TablePagination, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+    TableHead, TableRow, Typography, TablePagination, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress } from "@mui/material";
 import React,{ useState,useEffect } from 'react';
 import axios from 'axios';
 import { DeleteOutlineOutlined,VisibilityRounded } from "@mui/icons-material";
@@ -163,7 +163,9 @@ const Members = ():JSX.Element => {
                     />
                 </TableContainer>
             ):(
-                <Typography variant="h5" >Loading...</Typography>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
+                    <CircularProgress />
+                </div>
             )}
 
             {/* Delete member dialog */}

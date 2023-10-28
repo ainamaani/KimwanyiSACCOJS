@@ -84,15 +84,20 @@ const LoanRequest = ():JSX.Element => {
 
     return ( 
         <div>
-            <Typography variant="body1">Request loan</Typography>
+            
             <form noValidate autoComplete="off" onSubmit={handleLoanRequest}>
+            <Typography variant="h5">Request loan</Typography>
                 <StyledTextField 
                     label="Loan amount"
                     variant="outlined"
-                    fullWidth required
+                    required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={amountRequested}
                     onChange={(e)=>{setAmountRequested(e.target.value)}}
-                    style={{marginTop:20,marginBottom:20}}
                 />
                 { errors.amountRequested && (
                     <span style={{color:"red"}}>{errors.amountRequested}</span>
@@ -110,6 +115,11 @@ const LoanRequest = ():JSX.Element => {
                     label="Loan purpose"
                     variant="outlined"
                     fullWidth required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={loanPurpose}
                     rows={5}
                     onChange={(e)=>{setLoanPurpose(e.target.value)}}
@@ -121,6 +131,11 @@ const LoanRequest = ():JSX.Element => {
                     label="Loan Type"
                     variant="outlined"
                     fullWidth required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={loanType}
                     onChange={(e)=>{setLoanType(e.target.value)}}
                 />
@@ -131,6 +146,11 @@ const LoanRequest = ():JSX.Element => {
                     label="Monthly Income"
                     variant="outlined"
                     fullWidth required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={monthlyIncome}
                     onChange={(e)=>{setMonthlyIncome(e.target.value)}}
                 />
@@ -141,6 +161,11 @@ const LoanRequest = ():JSX.Element => {
                     label="Other sources of income(if any)"
                     variant="outlined"
                     fullWidth
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={otherSourcesOfIncome}
                     onChange={(e)=>{setOtherSourcesOfIncome(e.target.value)}}
                 />
@@ -148,6 +173,11 @@ const LoanRequest = ():JSX.Element => {
                     label="Guarantor Name"
                     variant="outlined"
                     fullWidth required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={guarantorName}
                     onChange={(e)=>{setGuarantorName(e.target.value)}}
                 />
@@ -158,6 +188,11 @@ const LoanRequest = ():JSX.Element => {
                     label="Guarantor Email"
                     variant="outlined"
                     fullWidth required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={guarantorEmail}
                     onChange={(e)=>{setGuarantorEmail(e.target.value)}}
                 />
@@ -168,13 +203,23 @@ const LoanRequest = ():JSX.Element => {
                     label="Guarantor Phone Number"
                     variant="outlined"
                     fullWidth required
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     value={guarantorPhoneNumber}
                     onChange={(e)=>{setGuarantorPhoneNumber(e.target.value)}}
                 />
                 { errors.guarantorPhoneNumber && (
                     <span style={{color:"red"}}>{errors.guarantorPhoneNumber}</span>
                 )}
-                <StyledButton type="submit" variant="contained">Request Loan</StyledButton>
+                <StyledButton 
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    display: 'block'  
+                 }}
+                type="submit" variant="contained">Request Loan</StyledButton>
             </form>
         </div>
      );

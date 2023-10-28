@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 
 
 const StyledTextField = styled(TextField)({
-    marginTop: '20px',
-    marginBottom: '20px',
+    marginTop: 20,
+    marginBottom: 20,
     display: 'block'
 });
 
 const StyledButton = styled(Button)({
-    marginTop: '20px',
-    marginBottom: '20px',
+    marginTop: 20,
+    marginBottom: 20,
     display: 'block'
 })
 
@@ -60,12 +60,18 @@ const Login = ():JSX.Element => {
 
     return ( 
         <div>
-            <Typography variant="h4">Login</Typography>
             <form autoCorrect="off" noValidate onSubmit={handleLogin}>
+            <Typography variant="h4">Login</Typography>
                 <StyledTextField 
                     label="Email"
                     variant="outlined"
                     required fullWidth
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+
+                     }}
                     onChange={(e)=>{setEmail(e.target.value)}}
                 />
                 <StyledTextField 
@@ -73,9 +79,20 @@ const Login = ():JSX.Element => {
                     variant="outlined"
                     required fullWidth
                     type="password"
+                    sx={{marginTop: 2, 
+                        marginBottom: 2, 
+                        width: 600,
+                        display: 'block'
+                     }}
                     onChange={(e)=>{setPassword(e.target.value)}}
                 />
-                <StyledButton variant="contained" type="submit">Login</StyledButton>
+                <StyledButton variant="contained" 
+                sx={{marginTop: 2, 
+                    marginBottom: 2, 
+                    display: 'block'
+                    
+                 }}
+                type="submit">Login</StyledButton>
                 { error && <span style={{color:"red"}}>{error}</span>  }
             </form>
         </div>
