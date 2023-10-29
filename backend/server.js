@@ -7,6 +7,7 @@ const cors = require("cors");
 const MemberRoutes = require("./routes/MemberRoutes");
 const ApprovedMemberRoutes = require("./routes/ApprovedMemberRoutes");
 const LoanRoutes = require("./routes/LoanRoutes");
+const TransactionRoutes = require("./routes/TransactionRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use((req,res,next)=>{
 app.use('/api/members',MemberRoutes);
 app.use('/api/approvedmembers',ApprovedMemberRoutes);
 app.use('/api/loans',LoanRoutes);
+app.use('/api/transaction',TransactionRoutes);
 
 //connect to mongo db
 mongoose.connect(process.env.dbURI)
