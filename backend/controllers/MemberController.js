@@ -192,6 +192,7 @@ const approveMembership = async(req,res) =>{
             //save the member object with the new membership status
             const approvedMember = await memberToApprove.save({ validateBeforeSave:false });
 
+            //generate account number
             const newAccountNumber = generateUniqueAccountNumber();
 
             // Activate account for the member
@@ -300,9 +301,10 @@ const memberLogin = async(req,res) =>{
         // create a token for a logged in user
         const token = createToken(member._id);
         const firstName = member.firstName;
+        const id = member._id;
 
         // return the token and other details when the credentials match
-        return res.status(200).json({ token ,email ,firstName});
+        return res.status(200).json({ token ,email ,firstName, id});
     }
 }
 

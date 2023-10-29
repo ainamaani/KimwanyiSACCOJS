@@ -2,7 +2,9 @@ import { Typography } from "@mui/material";
 
 const Transactions = ():JSX.Element => {
     return ( 
-        <Typography variant="h4">Transactions</Typography>
+        <div>
+            <Typography variant="h5">Make a transaction</Typography>
+        </div>
      );
 }
  

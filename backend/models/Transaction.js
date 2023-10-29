@@ -1,11 +1,17 @@
 const mongoose = require('mongoose');
 const Member = require('./Member');
+const Account = require('./Account');
 
 const TransactionSchema = new mongoose.Schema({
     member:{
         type: mongoose.Schema.Types.ObjectId,
         ref: Member,
         required:[true, "Member carrying out transaction required"]
+    },
+    account:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Account,
+        required:[true, "Account carrying out transaction required"]
     },
     amount: {
         type: Number,
