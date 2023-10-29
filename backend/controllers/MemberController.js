@@ -4,6 +4,8 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Account = require('../models/Account');
+const uuid = require('uuid');
 
 
 //SEND EMAIL FUNCTION
@@ -167,6 +169,13 @@ Kimwanyi SACCO`);
     }
 }
 
+function generateUniqueAccountNumber() {
+    // Generate a random 10-digit number and prepend a 3-digit prefix
+    const prefix = "102"; 
+    const random10DigitNumber = Math.floor(1000000000 + Math.random() * 9000000000);
+    return prefix + random10DigitNumber;
+}
+
 //approve member
 const approveMembership = async(req,res) =>{
     const {id} = req.params;
@@ -183,7 +192,18 @@ const approveMembership = async(req,res) =>{
             //save the member object with the new membership status
             const approvedMember = await memberToApprove.save({ validateBeforeSave:false });
 
-            if(approvedMember){
+            const newAccountNumber = generateUniqueAccountNumber();
+
+            // Activate account for the member
+            const newAccount = await Account.create({ member : id, accountNumber:newAccountNumber, accountBalance : 0.00 ,
+                                openingDate : Date.now() , accountStatus : "Active"
+            })
+
+            if(!newAccount){
+                return res.status(400).json({ error: "New account for approved user could not be created" });
+            }
+
+            if(approvedMember && newAccount){
                 //send approval email
                 sendEmail('aina.isaac2002@gmail.com',
                             'Membership Approval',
@@ -193,6 +213,7 @@ We are delighted to inform you that your application to join Kimwanyi SACCO has 
 Congratulations! Your membership with Kimwanyi SACCO is now active. We look forward to having you as a valued member of our organization.
 If you have any questions or need further information, please feel free to contact our SACCO office. We are here to assist you with any inquiries you may have.
 Thank you for choosing Kimwanyi SACCO for your financial needs. We are excited to have you as part of our community.
+Your account number is ${newAccount.accountNumber}
 
 Sincerely,
 

@@ -8,6 +8,7 @@ const MemberRoutes = require("./routes/MemberRoutes");
 const ApprovedMemberRoutes = require("./routes/ApprovedMemberRoutes");
 const LoanRoutes = require("./routes/LoanRoutes");
 const TransactionRoutes = require("./routes/TransactionRoutes");
+const AccountRoutes = require("./routes/AccountRoutes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use('/api/members',MemberRoutes);
 app.use('/api/approvedmembers',ApprovedMemberRoutes);
 app.use('/api/loans',LoanRoutes);
 app.use('/api/transaction',TransactionRoutes);
+app.use('/api/accounts',AccountRoutes);
 
 //connect to mongo db
 mongoose.connect(process.env.dbURI)
