@@ -16,7 +16,7 @@ const getAccounts = async(req,res) =>{
 const getMemberAccountData = async(req,res) =>{
     const {id} = req.params;
     try {
-        const memberAccountData = await Account.findById({ member: id });
+        const memberAccountData = await Account.findById({ member: id }).populate('member');
         if(memberAccountData){
             return res.status(200).json(memberAccountData);
         }else{
