@@ -300,11 +300,12 @@ const memberLogin = async(req,res) =>{
     }else{
         // create a token for a logged in user
         const token = createToken(member._id);
+
         const firstName = member.firstName;
         const id = member._id;
 
         // return the token and other details when the credentials match
-        return res.status(200).json({ token ,email ,firstName, id});
+        return res.status(200).json({ token ,email ,id ,firstName});
     }
 }
 

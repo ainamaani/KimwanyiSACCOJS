@@ -1,11 +1,14 @@
 import { DashboardOutlined,AccountCircleOutlined,CreditCardOutlined,
     PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined } from "@mui/icons-material";
 import { Drawer, Typography, List, ListItem, ListItemIcon,ListItemText,
-    AppBar,Toolbar } from "@mui/material";
+    AppBar,Toolbar, Button } from "@mui/material";
 import { useNavigate,useLocation } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/system";
 import React,{useState} from 'react';
+import useAuthContext from "../hooks/UseAuthContext";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const drawerWidth = 260;
@@ -102,6 +105,7 @@ const menuItems = [
 ]
 
 const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
+    const {member,dispatch} = useAuthContext();
     const navigate = useNavigate();
     const location = useLocation();
     const classes = useStyles();
@@ -110,6 +114,19 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
 
     const handleLoansClick = () =>{
         setShowLoansSubMenu(!showLoansSubMenu);
+    }
+
+    const handleLogout = () =>{
+        // delete the token from the local storage
+        localStorage.removeItem('member');
+        // update the auth API context
+        dispatch({ type:'LOGOUT' });
+        // redirect to the login page
+        navigate('/login');
+        // show feedback after log out
+        toast.success("Logged out successfully",{
+            position: "top-right"
+        })
     }
 
     return ( 
@@ -123,6 +140,9 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
                     <Typography variant="h5">
                         Ainamaani
                     </Typography>
+                    <Button onClick={handleLogout} variant="outlined"
+                    style={{ marginLeft: '10px'}}
+                    >Log out</Button>
                 </Toolbar>
             </StyledAppBar>
             {/* Drawer */}

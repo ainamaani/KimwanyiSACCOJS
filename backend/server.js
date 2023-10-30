@@ -25,7 +25,7 @@ app.use((req,res,next)=>{
 app.use('/api/members',MemberRoutes);
 app.use('/api/approvedmembers',ApprovedMemberRoutes);
 app.use('/api/loans',LoanRoutes);
-app.use('/api/transaction',TransactionRoutes);
+app.use('/api/transactions',TransactionRoutes);
 app.use('/api/accounts',AccountRoutes);
 
 //connect to mongo db

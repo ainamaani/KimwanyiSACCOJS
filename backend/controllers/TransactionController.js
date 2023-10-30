@@ -4,10 +4,12 @@ const Transaction = require("../models/Transaction");
 
 const makeTransaction = async(req,res) =>{
     const {id} = req.params;
+    const { amount,transactionType} = req.body;
 
-    const { amount,transactionType,transactionDate,transactionStatus,
-        transactionApprovalStatus } = req.body;
-
+    if(!amount || !transactionType){
+        return res.status(400).json({ error: "Both fields are required" });
+    }
+         
     if(amount < 5000){
         return res.status(400).json({ error: "The minimum amount of money you can transact is 5000 UGx" })
     }
@@ -16,7 +18,7 @@ const makeTransaction = async(req,res) =>{
     let accountId;
 
     try {
-        const account = await Account.find({ member:id });
+        const account = await Account.findOne({ member:id });
         if(account){
             accountBalance = account.accountBalance;
             accountId = account._id;
