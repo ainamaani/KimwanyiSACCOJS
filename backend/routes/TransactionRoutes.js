@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { makeTransaction } =  require('../controllers/TransactionController');
+const { makeTransaction, getTransactions } =  require('../controllers/TransactionController');
 
-router.get('/')
+router.get('/',getTransactions);
 
 router.post('/maketransaction/:id', makeTransaction);
 

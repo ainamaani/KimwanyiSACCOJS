@@ -47,6 +47,20 @@ const makeTransaction = async(req,res) =>{
     }
 }
 
+const getTransactions = async(req,res) =>{
+    try {
+        const allTransactions = await Transaction.find({}).populate('member').populate('account');
+        if(allTransactions){
+            return res.status(200).json(allTransactions);
+        }else{
+            return res.status(400).json({ error: "Failed to fetch all transactions" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
-    makeTransaction
+    makeTransaction,
+    getTransactions
 }

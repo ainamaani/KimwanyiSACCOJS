@@ -1,5 +1,5 @@
 import { DashboardOutlined,AccountCircleOutlined,CreditCardOutlined,
-    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined } from "@mui/icons-material";
+    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined, MoneyOffCsredOutlined, MonetizationOnOutlined } from "@mui/icons-material";
 import { Drawer, Typography, List, ListItem, ListItemIcon,ListItemText,
     AppBar,Toolbar, Button } from "@mui/material";
 import { useNavigate,useLocation } from "react-router-dom";
@@ -85,7 +85,19 @@ const menuItems = [
     {
         text:'Transactions',
         icon: <PaymentOutlined color="primary" />,
-        path:'/transactions'
+        path:'/transactions',
+        subItems: [
+            {
+                text: 'Make transaction',
+                icon: <MoneyOffCsredOutlined color="primary"/>,
+                path: '/maketransaction'
+            },
+            {
+                text: 'View transactions',
+                icon: <MonetizationOnOutlined color="primary"/>,
+                path: '/transactions'
+            }
+        ]
     },
     {
         text:'Applications',
@@ -113,6 +125,7 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
     const [showLoansSubMenu, setShowLoansSubMenu] = useState<boolean>(false);
 
     const handleLoansClick = () =>{
+        
         setShowLoansSubMenu(!showLoansSubMenu);
     }
 

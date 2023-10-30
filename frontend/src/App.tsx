@@ -7,13 +7,15 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Loans from './pages/Loans';
-import Transactions from './pages/Transactions';
+import Transactions from './pages/MakeTransaction';
 import Members from './pages/Members';
 import SetAccount from './pages/SetAccount';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import LoanRequest from './pages/LoanRequest';
 import LoanApplications from './pages/LoanApplications';
+import MakeTransaction from './pages/MakeTransaction';
+import ViewTransactions from './pages/Transactions';
 
 
 function App() {
@@ -36,7 +38,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/loans" element={<Loans />} />
-            <Route path="/transactions" element={<Transactions />} />
+            <Route path="/maketransaction" element={<MakeTransaction />} />
+            <Route path="/transactions" element={ <ViewTransactions /> } />
             <Route path="/applications" element={<MemberApplications />} />
             <Route path="/members" element={<Members />}/>
             <Route path="/requestloan" element={<LoanRequest />} />
