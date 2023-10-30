@@ -13,6 +13,22 @@ const getAccounts = async(req,res) =>{
     }
 }
 
+const getMemberAccountData = async(req,res) =>{
+    const {id} = req.params;
+    try {
+        const memberAccountData = await Account.findById({ member: id });
+        if(memberAccountData){
+            return res.status(200).json(memberAccountData);
+        }else{
+            return res.status(400).json({ error: "Failed to fetch account details for the member" });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message })
+    }
+}
+
 module.exports = {
-    getAccounts
+    getAccounts,
+    getMemberAccountData
 }
