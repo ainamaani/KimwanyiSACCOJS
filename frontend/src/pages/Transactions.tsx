@@ -70,16 +70,18 @@ const ViewTransactions = ():JSX.Element => {
                      </TableHead>
                      <TableBody>
                          { 
-                             transactions.map((transaction : Transaction) =>(
-                                 <TableRow>
-                                     <TableCell>{transaction.member.firstName + " "}{transaction.member.lastName}</TableCell>
-                                     <TableCell>{transaction.account.accountNumber}</TableCell>
-                                     <TableCell>{transaction.amount}</TableCell>
-                                     <TableCell>{transaction.transactionType}</TableCell>
-                                     <TableCell>{transaction.transactionDate ? new Date(transaction.transactionDate).toLocaleDateString() : ''}</TableCell>
-                                     <TableCell>{transaction.transactionStatus}</TableCell>
-                                     <TableCell>{transaction.transactionApprovalStatus}</TableCell>
-                                 </TableRow>
+                             transactions
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((transaction : Transaction) =>(
+                                    <TableRow>
+                                        <TableCell>{transaction.member.firstName + " "}{transaction.member.lastName}</TableCell>
+                                        <TableCell>{transaction.account.accountNumber}</TableCell>
+                                        <TableCell>{transaction.amount}</TableCell>
+                                        <TableCell>{transaction.transactionType}</TableCell>
+                                        <TableCell>{transaction.transactionDate ? new Date(transaction.transactionDate).toLocaleDateString() : ''}</TableCell>
+                                        <TableCell>{transaction.transactionStatus}</TableCell>
+                                        <TableCell>{transaction.transactionApprovalStatus}</TableCell>
+                                    </TableRow>
                              ))
                          }
                      </TableBody>

@@ -111,20 +111,20 @@ const Profile = ():JSX.Element => {
             <Typography variant="h4">Your Member details</Typography>
             {loggedInMemberData  ? (
                 <div>
-                    <Typography variant="body1">First Name: {loggedInMemberData.firstName}</Typography>
-                    <Typography variant="body1">Last Name: {loggedInMemberData.lastName}</Typography>
-                    <Typography variant="body1">Gender: {loggedInMemberData.gender}</Typography>
-                    <Typography variant="body1">Residential Address: {loggedInMemberData.residentialAddress}</Typography>
-                    <Typography variant="body1">Email: {loggedInMemberData.email}</Typography>
-                    <Typography variant="body1">Phone number: {loggedInMemberData.phoneNumber}</Typography>
-                    <Typography variant="body1">Employment Status: {loggedInMemberData.employmentStatus}</Typography>
-                    <Typography variant="body1">Current Occupation: {loggedInMemberData.currentOccupation ? loggedInMemberData.currentOccupation : "None"}</Typography>
-                    <Typography variant="body1">Employer Name: {loggedInMemberData.employerName ? loggedInMemberData.employerName : "None"}</Typography>
-                    <Typography variant="body1">Employer Email: {loggedInMemberData.employerEmail ? loggedInMemberData.employerEmail : "None"}</Typography>
-                    <Typography variant="body1">Employer Phone number: {loggedInMemberData.employerPhoneNumber ? loggedInMemberData.employerPhoneNumber : "None"}</Typography>
-                    <Typography variant="body1">Next of kin: {loggedInMemberData.nextOfKin}</Typography>
-                    <Typography variant="body1">Next of kin Email: {loggedInMemberData.nextOfKinEmail}</Typography>
-                    <Typography variant="body1">Next of kin Phone Number: {loggedInMemberData.nextOfKinPhoneNumber}</Typography>
+                    <Typography variant="body1"><strong>First Name:</strong> {loggedInMemberData.firstName}</Typography>
+                    <Typography variant="body1"><strong>Last Name:</strong> {loggedInMemberData.lastName}</Typography>
+                    <Typography variant="body1"><strong>Gender: </strong>{loggedInMemberData.gender}</Typography>
+                    <Typography variant="body1"><strong>Residential Address:</strong> {loggedInMemberData.residentialAddress}</Typography>
+                    <Typography variant="body1"><strong>Email:</strong> {loggedInMemberData.email}</Typography>
+                    <Typography variant="body1"><strong>Phone number:</strong> {loggedInMemberData.phoneNumber}</Typography>
+                    <Typography variant="body1"><strong>Employment Status:</strong> {loggedInMemberData.employmentStatus}</Typography>
+                    <Typography variant="body1"><strong>Current Occupation:</strong> {loggedInMemberData.currentOccupation ? loggedInMemberData.currentOccupation : "None"}</Typography>
+                    <Typography variant="body1"><strong>Employer Name:</strong> {loggedInMemberData.employerName ? loggedInMemberData.employerName : "None"}</Typography>
+                    <Typography variant="body1"><strong>Employer Email:</strong> {loggedInMemberData.employerEmail ? loggedInMemberData.employerEmail : "None"}</Typography>
+                    <Typography variant="body1"><strong>Employer Phone number:</strong> {loggedInMemberData.employerPhoneNumber ? loggedInMemberData.employerPhoneNumber : "None"}</Typography>
+                    <Typography variant="body1"><strong>Next of kin:</strong> {loggedInMemberData.nextOfKin}</Typography>
+                    <Typography variant="body1"><strong>Next of kin Email:</strong> {loggedInMemberData.nextOfKinEmail}</Typography>
+                    <Typography variant="body1"><strong>Next of kin Phone Number:</strong> {loggedInMemberData.nextOfKinPhoneNumber}</Typography>
                     
                 </div>
             ):(
