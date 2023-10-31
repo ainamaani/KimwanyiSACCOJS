@@ -20,28 +20,28 @@ const makeTransaction = async(req,res) =>{
     try {
         const account = await Account.findOne({ member:id });
         if(account){
-            accountBalance = account.accountBalance;
             accountId = account._id;
-        }
 
-        if(transactionType === "Deposit"){
-            accountBalance += amount;
-            await account.save({validateBeforeSave:false});
-        }
-        if(transactionType === "Withdraw"){
-            accountBalance -= amount;
-            await account.save({validateBeforeSave:false});
-        }
+            if(transactionType === "Deposit"){
+                account.accountBalance += amount;
+            }else if(transactionType === "Withdraw"){
+                account.accountBalance -= amount;
+            }
 
-        const newTransaction = await Transaction.create({ member: id ,account : accountId,
-            amount, transactionType, transactionDate : new Date(), transactionStatus : "Completed",
-            transactionApprovalStatus: "Approved"
-        });
+            await account.save();
 
-        if(newTransaction){
-            return res.status(200).json(newTransaction);
-        }
-        
+            const newTransaction = await Transaction.create({ member: id ,account : accountId,
+                amount, transactionType, transactionDate : new Date(), transactionStatus : "Completed",
+                transactionApprovalStatus: "Approved"
+            });
+    
+            if(newTransaction){
+                return res.status(200).json(newTransaction);
+            }
+            
+        }else{
+            return res.status(400).json({ error: "Account not found" });
+        }   
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
@@ -60,7 +60,22 @@ const getTransactions = async(req,res) =>{
     }
 }
 
+const getMemberTransactions = async(req,res) =>{
+    const {id} = req.params;
+    try {
+        const memberTransactions = await Transaction.find({ member: id }).sort({ createdAt: -1 });
+        if(memberTransactions){
+            return res.status(200).json(memberTransactions);
+        }else{
+            return res.status(400).json({ error: "Failed to retrieve transactions for the member" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     makeTransaction,
-    getTransactions
+    getTransactions,
+    getMemberTransactions
 }
