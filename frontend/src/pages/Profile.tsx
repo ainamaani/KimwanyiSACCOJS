@@ -1,10 +1,11 @@
-import { Button, Typography, TextField, CircularProgress } from "@mui/material";
+import { Button, Typography, TextField, CircularProgress} from "@mui/material";
 import React,{useState,useEffect} from 'react';
 import useAuthContext from "../hooks/UseAuthContext";
 import axios from 'axios';
 import { styled } from "@mui/styles";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from "react-router-dom";
 
 interface LoggedInUser{
     _id:string,
@@ -132,8 +133,8 @@ const Profile = ():JSX.Element => {
                     <CircularProgress />
                 </div>
             )}
-
-            <StyledButton variant="contained">Edit details</StyledButton>
+            <Link to={'/update'}>Update details</Link>
+            
             </div>
 
             

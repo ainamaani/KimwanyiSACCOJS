@@ -17,6 +17,7 @@ import LoanApplications from './pages/LoanApplications';
 import MakeTransaction from './pages/MakeTransaction';
 import ViewTransactions from './pages/Transactions';
 import MemberAccount from './pages/MemberAccount';
+import UpdateMemberData from './pages/UpdateMemberData';
 
 
 function App() {
@@ -46,6 +47,8 @@ function App() {
             <Route path="/requestloan" element={<LoanRequest />} />
             <Route path="/loanrequests" element={<LoanApplications />} />
             <Route path="/memberaccount" element={<MemberAccount/>} />
+            <Route path="/update" element={<UpdateMemberData />} />
+
           </Route>
         </Routes>
       </BrowserRouter>
