@@ -88,8 +88,13 @@ const resetForgotPassword = async(req,res) =>{
 
     const { memberEmail, resetPwordCode, newPassword } = req.body;
 
+    if(!memberEmail || !resetPwordCode || !newPassword){
+        return res.status(400).json({ error: "All fields are required" });
+    }
+
     try {
-        const memberResettingPassword = await ResetPassword.findOne({ email:memberEmail });
+        const memberResettingPasswordId = await Member.findOne({ email:memberEmail }).select('_id');
+        const memberResettingPassword = await ResetPassword.findOne({ member:memberResettingPasswordId });
         if(memberResettingPassword){
             // get the reset Password code sent
             const sentResetCode = memberResettingPassword.resetPasswordCode;
@@ -104,12 +109,13 @@ const resetForgotPassword = async(req,res) =>{
                 if(MemberResetingPassword){
                     MemberResetingPassword.password = newPasswordHash;
                     MemberResetingPassword.save({ validateBeforeSave: false });
+                    return res.status(200).json(MemberResetingPassword);
                 }else{
                     return res.status(400).json({ error: "Member doesn't exist" })
                 }
 
             }else{
-                return res.status(400).json({ error: "The input code isn't correct, try again!!" });
+                return res.status(400).json({ error: "The reset code isn't correct, check your email for a correct one and try again!!" });
             }
         }else{
             return res.status(400).json({ error: "No code was sent to this email" });

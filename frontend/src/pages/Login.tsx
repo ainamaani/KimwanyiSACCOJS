@@ -93,9 +93,9 @@ const Login = ():JSX.Element => {
                     
                  }}
                 type="submit">Login</StyledButton>
-                { error && <span style={{color:"red"}}>{error}</span>  }
+                { error && <span style={{color:"red", display:"block"}}>{error}</span>  }
 
-                <Link to={'/resetpassword'} >Forgot password?</Link>
+                <Link to={'/resetpassword'} style={{ textDecoration:"none", fontWeight:"400", color: "blue", fontSize: "1.1em" }} >Forgot password?</Link>
             </form>
         </div>
 
