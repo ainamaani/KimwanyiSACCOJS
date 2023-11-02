@@ -133,7 +133,16 @@ const Profile = ():JSX.Element => {
                     <CircularProgress />
                 </div>
             )}
-            <Link to={'/update'}>Update details</Link>
+            <Link to={'/update'} 
+                style={{
+                    textDecoration:"none",
+                    backgroundColor:"blue",
+                    padding: "5px",
+                    color: "white",
+                    borderRadius: "4px",
+                    marginTop: "10px"
+                }}
+            >Update details</Link>
             
             </div>
 
