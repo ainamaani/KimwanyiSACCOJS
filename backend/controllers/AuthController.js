@@ -1,6 +1,7 @@
 const Member = require('../models/Member');
 const { sendEmail } = require('../controllers/MemberController');
 const ResetPassword = require('../models/Auth');
+const bcrypt = require('bcrypt');
 
 // function to generate 6-digit verification code
 function generateRandomCode() {
@@ -46,11 +47,21 @@ Human Resource Manager
 Kimwanyi SACCO`
         );
 
-        const newResetPassword = await ResetPassword.create({member:memberExists._id ,resetPasswordCode:resetCode});
-        if(newResetPassword){
-            return res.status(200).json(newResetPassword);
+        // check if member already made a reset password request
+        const memberAlreadyRequested = await ResetPassword.findOne({ member: memberExists._id });
+
+        if(memberAlreadyRequested){
+            memberAlreadyRequested.resetPasswordCode = resetCode;
+            // save new object in the database after changing the resetPasswordCode property
+            await memberAlreadyRequested.save({ validateBeforeSave:false });
+            return res.status(200).json(memberAlreadyRequested);
         }else{
-            return res.status(400).json({ error: "Failed to add new reset password object" });
+            const newResetPassword = await ResetPassword.create({member:memberExists._id ,resetPasswordCode:resetCode});
+            if(newResetPassword){
+                return res.status(200).json(newResetPassword);
+            }else{
+                return res.status(400).json({ error: "Failed to add new reset password object" });
+            }
         }
 
     } catch (error) {
@@ -61,7 +72,12 @@ Kimwanyi SACCO`
 
 const getResetPasswordRequests = async(req,res) =>{
     try {
-        
+        const resetPasswordRequests = await ResetPassword.find({}).populate('member').sort({ createdAt: -1 });
+        if(resetPasswordRequests){
+            return res.status(200).json(resetPasswordRequests);
+        }else{
+            return res.status(400).json({ error: "Could not fetch the reset password requests" });
+        }
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
@@ -69,6 +85,38 @@ const getResetPasswordRequests = async(req,res) =>{
 
 
 const resetForgotPassword = async(req,res) =>{
+
+    const { memberEmail, resetPwordCode, newPassword } = req.body;
+
+    try {
+        const memberResettingPassword = await ResetPassword.findOne({ email:memberEmail });
+        if(memberResettingPassword){
+            // get the reset Password code sent
+            const sentResetCode = memberResettingPassword.resetPasswordCode;
+            if(sentResetCode === resetPwordCode){
+                // generate salt to hash new pword
+                const salt = await bcrypt.genSalt(10);
+                // hash the new password
+                const newPasswordHash = await bcrypt.hash(newPassword,salt);
+
+                // fetch the member whose password is to be changed.
+                const MemberResetingPassword = await Member.findOne({ email: memberEmail });
+                if(MemberResetingPassword){
+                    MemberResetingPassword.password = newPasswordHash;
+                    MemberResetingPassword.save({ validateBeforeSave: false });
+                }else{
+                    return res.status(400).json({ error: "Member doesn't exist" })
+                }
+
+            }else{
+                return res.status(400).json({ error: "The input code isn't correct, try again!!" });
+            }
+        }else{
+            return res.status(400).json({ error: "No code was sent to this email" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
     
 }
 
