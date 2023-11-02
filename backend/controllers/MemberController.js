@@ -369,5 +369,6 @@ module.exports = {
     getApprovedMembers,
     memberLogin,
     loggedInUserData,
-    changePassword
+    changePassword,
+    sendEmail
 }

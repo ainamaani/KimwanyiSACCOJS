@@ -18,6 +18,7 @@ import MakeTransaction from './pages/MakeTransaction';
 import ViewTransactions from './pages/Transactions';
 import MemberAccount from './pages/MemberAccount';
 import UpdateMemberData from './pages/UpdateMemberData';
+import ResetPassword from './pages/ResetPassword';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/apply" element={<MemberApplicationPage />} />
           <Route path="/setaccountdetails" element={<SetAccount/>} />
           <Route path="/login" element={<Login/>} />
+          <Route path="/resetpassword" element={<ResetPassword/>} />
           <Route
             element={
               <Layout>

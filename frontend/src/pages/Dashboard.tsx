@@ -1,8 +1,13 @@
 import { Typography } from "@mui/material";
+import React,{useState, useEffect} from 'react';
+import { calculateMembers } from "./Members";
 
 const Dashboard = ():JSX.Element => {
     return ( 
-        <Typography variant="h4">Dashboard</Typography>
+        <div>
+            <Typography variant="h4">Dashboard</Typography>
+            
+        </div>
      );
 }
  

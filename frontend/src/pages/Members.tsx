@@ -26,6 +26,10 @@ interface Member{
     membershipStatus:string
 }
 
+export const calculateMembers = (members : Member[]) =>{
+    return members.length;
+}
+
 
 
 const Members = ():JSX.Element => {
@@ -36,6 +40,8 @@ const Members = ():JSX.Element => {
     const [memberToDelete,setMemberToDelete] = useState<string | null>(null);
     const [isViewDialogOpen,setIsViewDialogOpen] = useState<boolean>(false);
     const [memberToView,setMemberToView] = useState<Member | null>(null);
+
+    
 
     useEffect(()=>{
         const fetchApprovedMembers = async() =>{
@@ -51,6 +57,13 @@ const Members = ():JSX.Element => {
 
         }
         fetchApprovedMembers();
+    },[members]);
+
+    // calculate the number of members
+    useEffect(()=>{
+        if(members){
+            console.log(calculateMembers(members));
+        }
     },[members]);
 
     const handleChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage:number) =>{

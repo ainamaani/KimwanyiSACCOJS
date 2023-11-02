@@ -9,6 +9,8 @@ const ApprovedMemberRoutes = require("./routes/ApprovedMemberRoutes");
 const LoanRoutes = require("./routes/LoanRoutes");
 const TransactionRoutes = require("./routes/TransactionRoutes");
 const AccountRoutes = require("./routes/AccountRoutes");
+const AuthRoutes = require("./routes/AuthRoutes");
+const DashboardRoutes = require("./routes/DashboardRoutes");
 
 const app = express();
 
@@ -18,7 +20,7 @@ app.use(express.json());
 app.use('uploads', express.static(path.join(__dirname, 'uploads')));
 app.use((req,res,next)=>{
     console.log(req.body, req.path , req.method)
-    next()
+    next();
 });
 
 //routes
@@ -27,6 +29,8 @@ app.use('/api/approvedmembers',ApprovedMemberRoutes);
 app.use('/api/loans',LoanRoutes);
 app.use('/api/transactions',TransactionRoutes);
 app.use('/api/accounts',AccountRoutes);
+app.use('/api/dashboard',DashboardRoutes);
+app.use('/api/auth', AuthRoutes);
 
 //connect to mongo db
 mongoose.connect(process.env.dbURI)

@@ -3,7 +3,7 @@ import { styled } from "@mui/styles";
 import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import useAuthContext from "../hooks/UseAuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const StyledTextField = styled(TextField)({
@@ -94,6 +94,8 @@ const Login = ():JSX.Element => {
                  }}
                 type="submit">Login</StyledButton>
                 { error && <span style={{color:"red"}}>{error}</span>  }
+
+                <Link to={'/resetpassword'} >Forgot password?</Link>
             </form>
         </div>
 
