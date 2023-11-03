@@ -19,6 +19,7 @@ import ViewTransactions from './pages/Transactions';
 import MemberAccount from './pages/MemberAccount';
 import UpdateMemberData from './pages/UpdateMemberData';
 import ResetPassword from './pages/ResetPassword';
+import MemberAccounts from './pages/MemberAccounts';
 
 
 function App() {
@@ -50,9 +51,7 @@ function App() {
             <Route path="/loanrequests" element={<LoanApplications />} />
             <Route path="/memberaccount" element={<MemberAccount/>} />
             <Route path="/update" element={<UpdateMemberData />} />
-            <Route path="/memberaccounts" element={<MemberAccount />} />
-            
-
+            <Route path="/memberaccounts" element={<MemberAccounts/>} />
           </Route>
         </Routes>
       </BrowserRouter>

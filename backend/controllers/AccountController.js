@@ -2,7 +2,7 @@ const Account = require('../models/Account');
 
 const getAccounts = async(req,res) =>{
     try {
-        const accounts = await Account.find({}).sort({ createdAt:-1 });
+        const accounts = await Account.find({}).sort({ createdAt:-1 }).populate('member');
         if(accounts){
             return res.status(200).json(accounts);
         }else{
@@ -28,7 +28,24 @@ const getMemberAccountData = async(req,res) =>{
     }
 }
 
+const freezeAccount = async(req,res) =>{
+    const {id} = req.params;
+    try {
+        const accountToFreeze = await Account.findById(id);
+        if(accountToFreeze){
+            accountToFreeze.accountStatus = "Frozen";
+            await accountToFreeze.save({ validateBeforeSave:false });
+            return res.status(200).json(accountToFreeze);
+        }else{
+            return res.status(400).json({ error: "Failed to get account to freeze" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAccounts,
-    getMemberAccountData
+    getMemberAccountData,
+    freezeAccount
 }

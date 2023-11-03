@@ -72,6 +72,11 @@ const menuItems = [
         path:'/memberaccount'
     },
     {
+        text:'Member Accounts',
+        icon: <AccountCircleOutlined color="primary" />,
+        path:'/memberaccounts'
+    },
+    {
         text:'Loans',
         icon: <CreditCardOutlined color="primary" />,
         path:'/loans',
