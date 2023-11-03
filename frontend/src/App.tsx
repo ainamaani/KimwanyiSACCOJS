@@ -50,6 +50,8 @@ function App() {
             <Route path="/loanrequests" element={<LoanApplications />} />
             <Route path="/memberaccount" element={<MemberAccount/>} />
             <Route path="/update" element={<UpdateMemberData />} />
+            <Route path="/memberaccounts" element={<MemberAccount />} />
+            
 
           </Route>
         </Routes>

@@ -6,6 +6,8 @@ const getDashboardStatistics = async(req,res) =>{
         const numberOfMembers = await Member.countDocuments({ membershipStatus: "Approved" });
         const numberOfPendingApplications = await Member.countDocuments({ membershipStatus: "Not Approved" });
         const numberOfDeclinedApplications = await Member.countDocuments({ membershipStatus: "Declined" });
+        const numberOfFemaleMembers = await Member.countDocuments({ gender:"Female" });
+        const numberOfMaleMembers = await Member.countDocuments({ gender:"Male" });
 
         // calculate the money in the system
         const accounts = await Account.find({},'accountBalance');
@@ -19,7 +21,7 @@ const getDashboardStatistics = async(req,res) =>{
 
         const statistics = {
             numberOfMembers,numberOfPendingApplications,numberOfDeclinedApplications,
-            totalAccountBalance
+            totalAccountBalance,numberOfFemaleMembers,numberOfMaleMembers
         }
         return res.status(200).json(statistics);
         

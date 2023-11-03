@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+
 const drawerWidth = 260;
 
 const StyledAppBar = styled(AppBar)({
@@ -155,9 +156,9 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
                     <Typography variant="h5" className={classes.appbarTitle}>
                         Kimwanyi SACCO
                     </Typography>
-                    <Typography variant="h5">
-                        Ainamaani
-                    </Typography>
+                    { member && (
+                        <Typography variant="h5">{member.firstName}</Typography>
+                    )}
                     <Button onClick={handleLogout} variant="outlined"
                     style={{ marginLeft: '10px'}}
                     >Log out</Button>
