@@ -21,7 +21,6 @@ import UpdateMemberData from './pages/UpdateMemberData';
 import ResetPassword from './pages/ResetPassword';
 import MemberAccounts from './pages/MemberAccounts';
 
-
 function App() {
   return (
     <div className="App">

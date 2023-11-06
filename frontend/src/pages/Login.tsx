@@ -46,7 +46,7 @@ const Login = ():JSX.Element => {
                 setEmail('');
                 setPassword('');
                 setError('');
-                navigate('/');
+                navigate('/dashboard');
             }
         } catch (error : any) {
             if(error.response && error.response.data && error.response.data.error){

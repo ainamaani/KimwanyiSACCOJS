@@ -1,5 +1,5 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, 
-    TableHead, TableRow, Typography, TablePagination, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress } from "@mui/material";
+    TableHead, TableRow, Typography, TablePagination, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Button, CircularProgress, FormControl, InputLabel, Select, MenuItem, TextField } from "@mui/material";
 import React,{ useState,useEffect } from 'react';
 import axios from 'axios';
 import { DeleteOutlineOutlined,VisibilityRounded } from "@mui/icons-material";
@@ -41,7 +41,11 @@ const Members = ():JSX.Element => {
     const [isViewDialogOpen,setIsViewDialogOpen] = useState<boolean>(false);
     const [memberToView,setMemberToView] = useState<Member | null>(null);
 
-    
+    const [filterGender, setFilterGender] = useState<string | null>(null);
+    const [filterEmploymentStatus, setEmploymentStatus] = useState<string | null>(null);
+    const [filteredMembers, setFilteredMembers] = useState<Member[] | null>(null);
+    const [searchFirstName, setSearchFirstName] = useState<string>('');
+
 
     useEffect(()=>{
         const fetchApprovedMembers = async() =>{
@@ -50,6 +54,19 @@ const Members = ():JSX.Element => {
                 if(approvedMembers.status === 200){
                     const membersApproved: Member[] = approvedMembers.data;
                     setMembers(membersApproved);
+
+                    let filteredData = membersApproved;
+
+                    // Apply gender filter
+                    filteredData = applyGenderFilter(filteredData, filterGender);
+
+                    // Apply employment status filter
+                    filteredData = applyEmploymentStatusFilter(filteredData, filterEmploymentStatus);
+
+                    // Apply first name filter
+                    filteredData = applyFirstNameSearch(filteredData, searchFirstName);
+
+                    setFilteredMembers(filteredData);
                 }
             } catch (error) {
                 console.log(error)
@@ -57,7 +74,7 @@ const Members = ():JSX.Element => {
 
         }
         fetchApprovedMembers();
-    },[members]);
+    },[filterGender, filterEmploymentStatus,searchFirstName]);
 
     // calculate the number of members
     useEffect(()=>{
@@ -120,11 +137,80 @@ const Members = ():JSX.Element => {
         }
     }
 
+    const applyGenderFilter = (members: Member[], filter: string | null) => {
+        if (filter === null) {
+          return members;
+        }
+        return members.filter((member) => member.gender === filter);
+    };
+
+    const applyEmploymentStatusFilter = (members: Member[], filter: string | null) => {
+        if (filter === null) {
+          return members;
+        }
+        return members.filter((member) => member.employmentStatus === filter);
+    };
+
+    const applyFirstNameSearch = (members : Member[], searchValue: string) =>{
+        if(searchValue === ""){
+            return members;
+        }
+        const searchTerm = searchValue.toLowerCase();
+        return members.filter(
+            (member) =>{
+                return member.firstName.toLowerCase().includes(searchTerm);
+            }
+        );
+    }
+
     return (  
         <div>
             <Typography variant="h5">SACCO members</Typography>
-            { members ? (
+            <div className="content">
+                <TextField 
+                    label="Search by first name"
+                    sx={{
+                        width: '300px',
+                        marginRight: "10px"
+                    }}
+                    value={searchFirstName}
+                    onChange={(e)=>{setSearchFirstName(e.target.value)}}
+                />
+                <FormControl sx={{ 
+                    width: '200px',
+                    marginRight: '10px'
+                    }} >
+                    <InputLabel >Gender</InputLabel>
+                    <Select
+                        value={filterGender || ''}
+                        onChange={(e)=> setFilterGender(e.target.value || null)}
+                    >
+                        <MenuItem value="">Show All</MenuItem>
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                    </Select>
+                    
+                </FormControl>
+                <FormControl sx={{ width: '200px' }} >
+                    <InputLabel >Employment status</InputLabel>
+                    <Select
+                    
+                        value={filterEmploymentStatus || ''}
+                        onChange={(e)=> setEmploymentStatus(e.target.value || null)}
+                    >
+                        <MenuItem value="">Show All</MenuItem>
+                        <MenuItem value="Employed">Employed</MenuItem>
+                        <MenuItem value="Self Employed">Self Employed</MenuItem>
+                        <MenuItem value="Unemployed">Unemployed</MenuItem>
+                    </Select>
+                    
+                </FormControl>
+            </div>
+                          
+            { filteredMembers ? (
                 <TableContainer component={Paper}>
+                    
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -136,7 +222,7 @@ const Members = ():JSX.Element => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            { members
+                            { filteredMembers
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((member : Member) =>(
                                 <TableRow key={member._id}>
@@ -167,7 +253,7 @@ const Members = ():JSX.Element => {
                     <TablePagination 
                         rowsPerPageOptions={[5,10,20]}
                         component="div"
-                        count={members.length}
+                        count={filteredMembers.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}

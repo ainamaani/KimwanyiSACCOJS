@@ -22,11 +22,54 @@ form{
   margin: 15px;
 }
 
-.profile{
+.content{
   background-color: #fff;
   padding: 25px;
   border-radius: 8px;
-  margin: 15px;
+  margin: 0px;
 }
+
+.navbar{
+  background-color: #fff;
+  padding: 10px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1000px;
+  margin-bottom: 10px;
+}
+
+.navbar a{
+  text-decoration: none;
+  color: #fff;
+  background-color: #0095ff;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 4px;
+}
+.navbar a:hover{
+  background-color: #9ac3e0;
+}
+.head{
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+}
+.welcome .msg{
+  font-size: 60px;
+}
+.welcome .inner{
+  color: #0095ff;
+  font-style: italic;
+  font-weight: 500;
+}
+.sacco-image img{
+  border-radius: 4px;
+  position: relative;
+  margin-left: 40px;
+  height: 300px;
+}
+
+
+
+
 
 

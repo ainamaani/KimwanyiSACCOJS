@@ -1,7 +1,7 @@
 import { Typography,CircularProgress, Grid, Card, CardContent } from "@mui/material";
 import React,{useState, useEffect, useRef} from 'react';
 import axios from 'axios';
-import Chart from 'chart.js/auto'
+import Chart from 'chart.js/auto';
 
 interface Statistics{
     numberOfMembers: number,
@@ -49,7 +49,7 @@ const Dashboard = ():JSX.Element => {
                 });
             }
         }
-    },[statistics]);
+    },[chartOptions, pieChartData]);
 
     useEffect(()=>{
         const fetchStatistics = async() =>{

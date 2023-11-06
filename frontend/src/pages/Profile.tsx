@@ -108,7 +108,7 @@ const Profile = ():JSX.Element => {
     
     return ( 
         <div >
-            <div className="profile">
+            <div className="content">
             <Typography variant="h4">Your Member details</Typography>
             {loggedInMemberData  ? (
                 <div>
