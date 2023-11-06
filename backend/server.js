@@ -11,6 +11,7 @@ const TransactionRoutes = require("./routes/TransactionRoutes");
 const AccountRoutes = require("./routes/AccountRoutes");
 const AuthRoutes = require("./routes/AuthRoutes");
 const DashboardRoutes = require("./routes/DashboardRoutes");
+const NotificationRoutes = require("./routes/NotificationRoutes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/transactions',TransactionRoutes);
 app.use('/api/accounts',AccountRoutes);
 app.use('/api/dashboard',DashboardRoutes);
 app.use('/api/auth', AuthRoutes);
+app.use('/api/notifications', NotificationRoutes);
 
 //connect to mongo db
 mongoose.connect(process.env.dbURI)
