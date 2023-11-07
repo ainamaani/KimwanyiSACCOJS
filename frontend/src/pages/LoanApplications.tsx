@@ -4,7 +4,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle,
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
 import { VisibilityRounded } from "@mui/icons-material";
-
+import useAuthContext from "../hooks/UseAuthContext";
 
 interface LoanRequest {
     _id:string,
@@ -47,6 +47,7 @@ const LoanApplications = ():JSX.Element => {
     const [rowsPerPage,setRowsPerPage] = useState<number>(5); //Rows per page
     const [isViewDialogOpen,setIsViewDialogOpen] = useState<boolean>(false);
     const [loanRequestToView,setLoanRequestToView] = useState<LoanRequest | null>(null);
+    const {member} = useAuthContext();
 
 
     const handleChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage:number) =>{
@@ -74,7 +75,11 @@ const LoanApplications = ():JSX.Element => {
     useEffect(()=>{
         const fetchLoanRequests = async() =>{
             try {
-                const requestsForLoans =  await axios.get('http://localhost:4343/api/loans/requests');
+                const requestsForLoans =  await axios.get('http://localhost:4343/api/loans/requests',{
+                    headers:{
+                        'Authorization' : `Bearer ${member.token}`
+                    }
+                });
                 if(requestsForLoans.status === 200){
                     const requestedLoans : LoanRequest[]  = requestsForLoans.data;
                     setLoanRequests(requestedLoans);
@@ -83,8 +88,10 @@ const LoanApplications = ():JSX.Element => {
                 console.log(error);
             }
         }
-        fetchLoanRequests();
-    },[loanRequests])
+        if(member){
+            fetchLoanRequests();
+        }
+    },[loanRequests, member])
     return ( 
         <div>
             <Typography variant="body1">Loan requests</Typography>

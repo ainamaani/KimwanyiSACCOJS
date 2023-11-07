@@ -116,6 +116,11 @@ const menuItems = [
         path:'/applications'
     },
     {
+        text:'Notifications',
+        icon: <AssignmentIndOutlined color="primary" />,
+        path:'/notifications'
+    },
+    {
         text:'Members',
         icon: <GroupOutlined color="primary"/>,
         path:'/members'

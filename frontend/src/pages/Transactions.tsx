@@ -1,6 +1,7 @@
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
+import useAuthContext from "../hooks/UseAuthContext";
 
 interface Transaction{
     member:{
@@ -22,6 +23,7 @@ interface Transaction{
 
 
 const ViewTransactions = ():JSX.Element => {
+    const {member} = useAuthContext();
 
     const [transactions, setTransactions] = useState<Transaction[] | null>(null);
     const [page,setPage] = useState<number>(0); //current page
@@ -39,7 +41,11 @@ const ViewTransactions = ():JSX.Element => {
     useEffect(()=>{
         const fetchTransactions = async() =>{
             try {
-                const fetchedTransactions = await axios.get('http://localhost:4343/api/transactions');
+                const fetchedTransactions = await axios.get('http://localhost:4343/api/transactions',{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
 
                 if(fetchedTransactions.status === 200){
                     const data : Transaction[] = fetchedTransactions.data;
@@ -49,8 +55,10 @@ const ViewTransactions = ():JSX.Element => {
                 console.log(error);
             }
         }
-        fetchTransactions();
-    },[transactions])
+        if(member){
+            fetchTransactions();
+        }
+    },[transactions,member])
     return ( 
         <div>
             <Typography variant="h5">Transactions</Typography>

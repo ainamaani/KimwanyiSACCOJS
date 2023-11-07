@@ -45,13 +45,21 @@ const MemberAccount = ():JSX.Element => {
     useEffect(()=>{
         const fetchMemberAccountData = async() =>{
             try {
-                const memberAccountData = await axios.get(`http://localhost:4343/api/accounts/member/${member.id}`);
+                const memberAccountData = await axios.get(`http://localhost:4343/api/accounts/member/${member.id}`,{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
                 if(memberAccountData.status === 200){
                     const data : Account = memberAccountData.data;
                     setAccountData(data);
                 }
 
-                const memberTransactionData = await axios.get(`http://localhost:4343/api/transactions/member/${member.id}`);
+                const memberTransactionData = await axios.get(`http://localhost:4343/api/transactions/member/${member.id}`,{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
                 if(memberTransactionData.status === 200){
                     const transData : Transaction[] = memberTransactionData.data;
                     setTransactionData(transData);
@@ -60,7 +68,9 @@ const MemberAccount = ():JSX.Element => {
                 console.log(error)
             }
         }
-        fetchMemberAccountData();
+        if(member){
+            fetchMemberAccountData();
+        }
     },[member]);
 
     const handleChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage:number) =>{

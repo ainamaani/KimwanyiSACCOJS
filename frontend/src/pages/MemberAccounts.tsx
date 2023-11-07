@@ -4,6 +4,7 @@ import axios from 'axios';
 import { LockOpenOutlined } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import useAuthContext from "../hooks/UseAuthContext";
 
 interface MemberAccount{
     _id:string,
@@ -21,6 +22,7 @@ interface MemberAccount{
 }
 
 const MemberAccounts = ():JSX.Element => {
+    const {member} = useAuthContext();
     const [memberAccounts, setMemberAccounts] = useState<MemberAccount[] | null>(null);
     const [page,setPage] = useState<number>(0); //current page
     const [rowsPerPage,setRowsPerPage] = useState<number>(5); //Rows per page
@@ -31,7 +33,11 @@ const MemberAccounts = ():JSX.Element => {
     useEffect(()=>{
         const fetchMemberAccounts = async() =>{
             try {
-                const memberAccountsData = await axios.get('http://localhost:4343/api/accounts/');
+                const memberAccountsData = await axios.get('http://localhost:4343/api/accounts/',{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
                 if(memberAccountsData.status === 200){
                     const data : MemberAccount[] = memberAccountsData.data;
                     setMemberAccounts(data);
@@ -40,8 +46,10 @@ const MemberAccounts = ():JSX.Element => {
                 console.log(error);
             }
         }
-        fetchMemberAccounts();
-    },[memberAccounts]);
+        if(member){
+            fetchMemberAccounts();
+        }
+    },[memberAccounts, member]);
 
     const handleChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage:number) =>{
         setPage(newPage);
@@ -66,8 +74,15 @@ const MemberAccounts = ():JSX.Element => {
 
     // function to freeze account
     const handleFreezeAccount = async(accountToFreeze : string | null) =>{
+        if(!member){
+            return;
+        }
         try {
-            const freezeAccount = await axios.get(`http://localhost:4343/api/accounts/freeze/${accountToFreeze}`);
+            const freezeAccount = await axios.get(`http://localhost:4343/api/accounts/freeze/${accountToFreeze}`,{
+                headers:{
+                    'Authorization': `Bearer ${member.token}`
+                }
+            });
             if(freezeAccount.status === 200){
                 console.log(freezeAccount);
                 handleCloseFreezeDialog();

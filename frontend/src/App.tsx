@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter,Routes,Route, Outlet } from 'react-router-dom';
+import { BrowserRouter,Routes,Route, Outlet,Navigate } from 'react-router-dom';
+import useAuthContext from './hooks/UseAuthContext';
 import MemberApplicationPage from './pages/Application';
 import MemberApplications from './pages/MemberApplications';
 import { ToastContainer } from 'react-toastify';
@@ -20,8 +21,11 @@ import MemberAccount from './pages/MemberAccount';
 import UpdateMemberData from './pages/UpdateMemberData';
 import ResetPassword from './pages/ResetPassword';
 import MemberAccounts from './pages/MemberAccounts';
+import CreateNotification from './pages/Notifications';
 
 function App() {
+  const {member} = useAuthContext();
+
   return (
     <div className="App">
       <ToastContainer/>
@@ -39,18 +43,19 @@ function App() {
               </Layout>
             }
           >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/loans" element={<Loans />} />
-            <Route path="/maketransaction" element={<MakeTransaction />} />
-            <Route path="/transactions" element={ <ViewTransactions /> } />
-            <Route path="/applications" element={<MemberApplications />} />
-            <Route path="/members" element={<Members />}/>
-            <Route path="/requestloan" element={<LoanRequest />} />
-            <Route path="/loanrequests" element={<LoanApplications />} />
-            <Route path="/memberaccount" element={<MemberAccount/>} />
-            <Route path="/update" element={<UpdateMemberData />} />
-            <Route path="/memberaccounts" element={<MemberAccounts/>} />
+            <Route path="/dashboard" element={ member ? <Dashboard/> : <Navigate to="/login" />} />
+            <Route path="/profile" element={member ? <Profile/> : <Navigate to="/login"/>} />
+            <Route path="/loans" element={member ? <Loans/> : <Navigate to="/login"/>} />
+            <Route path="/maketransaction" element={member ? <MakeTransaction/> : <Navigate to="/login"/>} />
+            <Route path="/transactions" element={member ? <ViewTransactions/> : <Navigate to="/login"/> } />
+            <Route path="/applications" element={member ? <MemberApplications/> : <Navigate to="/login"/>} />
+            <Route path="/members" element={member ? <Members/> : <Navigate to="/login"/>}/>
+            <Route path="/requestloan" element={member ? <LoanRequest/> : <Navigate to="/login"/>} />
+            <Route path="/loanrequests" element={member ? <LoanApplications/> : <Navigate to="/login"/>} />
+            <Route path="/memberaccount" element={member ? <MemberAccount/> : <Navigate to="/login"/>} />
+            <Route path="/update" element={member ? <UpdateMemberData/> : <Navigate to="/login"/>} />
+            <Route path="/memberaccounts" element={member ? <MemberAccounts/> : <Navigate to="/login"/>} />
+            <Route path="/notifications" element={member ? <CreateNotification/> : <Navigate to="/login"/>} />
           </Route>
         </Routes>
       </BrowserRouter>

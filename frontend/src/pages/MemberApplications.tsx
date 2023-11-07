@@ -8,6 +8,7 @@ import useMemberApplicationContext from "../hooks/UseMemberApplicationContext";
 import { CancelOutlined, CheckCircleOutlineOutlined, CheckCircleOutlineRounded, VisibilityRounded } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import useAuthContext from "../hooks/UseAuthContext";
 
 interface Application{
     _id:string,
@@ -33,6 +34,8 @@ interface Application{
 
 const MemberApplications = ():JSX.Element => {
 
+    const {member} = useAuthContext();
+
     const {applications, dispatch} = useMemberApplicationContext();
 
     const [page,setPage] = useState<number>(0); //current page
@@ -48,7 +51,11 @@ const MemberApplications = ():JSX.Element => {
         const fetchMemberApplications = async() =>{
             //try fetching member applications
             try {
-                const applicationsFetched = await axios.get('http://localhost:4343/api/members');
+                const applicationsFetched = await axios.get('http://localhost:4343/api/members',{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
                 if(applicationsFetched.status === 200){
                     const applicationData: Application[] = applicationsFetched.data;
                     dispatch({ type:'SET_APPLICATIONS', payload:applicationData });
@@ -57,10 +64,11 @@ const MemberApplications = ():JSX.Element => {
                 console.log(error);
             }
         }
+        if(member){
+            fetchMemberApplications();
+        }
 
-        fetchMemberApplications();
-
-    },[applications,dispatch]);
+    },[applications,dispatch,member]);
 
 
     const handleChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage:number) =>{
@@ -109,10 +117,17 @@ const MemberApplications = ():JSX.Element => {
     }
 
     // Function to approve member
-    const handleApproveMember = async(member : string | null) => {
-        if(member !== null){
+    const handleApproveMember = async(memberToApprove : string | null) => {
+        if(!member){
+            return;
+        }
+        if(memberToApprove !== null){
             try {
-                const memberApproval = await axios.get(`http://localhost:4343/api/members/approve/${member}`);
+                const memberApproval = await axios.get(`http://localhost:4343/api/members/approve/${memberToApprove}`,{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
                 if(memberApproval.status === 200){
                     handleCloseApproveDialog();
                     toast.success('Member application approved successfully',{
@@ -128,10 +143,17 @@ const MemberApplications = ():JSX.Element => {
         }
     }
     // Function to decline membership
-    const handleRejectMember = async(member : string | null) =>{
-        if(member !== null){
+    const handleRejectMember = async(memberToReject : string | null) =>{
+        if(!member){
+            return;
+        }
+        if(memberToReject !== null){
             try {
-                const memberRejection = await axios.get(`http://localhost:4343/api/members/decline/${member}`)
+                const memberRejection = await axios.get(`http://localhost:4343/api/members/decline/${memberToReject}`,{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                })
                 if(memberRejection.status === 200){
                     handleCloseRejectDialog();
                     toast.success('Application declined successfully',{

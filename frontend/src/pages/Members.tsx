@@ -4,7 +4,9 @@ import React,{ useState,useEffect } from 'react';
 import axios from 'axios';
 import { DeleteOutlineOutlined,VisibilityRounded } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import useAuthContext from "../hooks/UseAuthContext";
 import 'react-toastify/dist/ReactToastify.css';
+
 
 interface Member{
     _id:string,
@@ -33,6 +35,7 @@ export const calculateMembers = (members : Member[]) =>{
 
 
 const Members = ():JSX.Element => {
+    const {member} = useAuthContext();
     const [members,setMembers] = useState<Member[] | null>(null);
     const [page,setPage] = useState<number>(0); //current page
     const [rowsPerPage,setRowsPerPage] = useState<number>(5); //Rows per page
@@ -50,7 +53,11 @@ const Members = ():JSX.Element => {
     useEffect(()=>{
         const fetchApprovedMembers = async() =>{
             try {
-                const approvedMembers = await axios.get('http://localhost:4343/api/members/approvedmembers');
+                const approvedMembers = await axios.get('http://localhost:4343/api/members/approvedmembers',{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
                 if(approvedMembers.status === 200){
                     const membersApproved: Member[] = approvedMembers.data;
                     setMembers(membersApproved);
@@ -73,15 +80,11 @@ const Members = ():JSX.Element => {
             }
 
         }
-        fetchApprovedMembers();
-    },[filterGender, filterEmploymentStatus,searchFirstName]);
-
-    // calculate the number of members
-    useEffect(()=>{
-        if(members){
-            console.log(calculateMembers(members));
+        if(member){
+            fetchApprovedMembers();
         }
-    },[members]);
+    },[filterGender, filterEmploymentStatus,searchFirstName, member]);
+
 
     const handleChangePage = (e: React.MouseEvent<HTMLButtonElement> | null, newPage:number) =>{
         setPage(newPage);
@@ -117,11 +120,14 @@ const Members = ():JSX.Element => {
     }
 
     // Function to delete member
-    const handleDeleteMember = async(member : string | null) =>{
-        if(member !== null){
+    const handleDeleteMember = async(memberToDelete : string | null) =>{
+        if(!member){
+            return;
+        }
+        if(memberToDelete !== null){
             // try deleting the member
             try {
-                const deletedMember = await axios.delete(`http://localhost:4343/api/members/delete/${member}`);
+                const deletedMember = await axios.delete(`http://localhost:4343/api/members/delete/${memberToDelete}`);
                 if(deletedMember.status === 200){
                     handleCloseDeleteDialog();
                     toast.success('Member deleted successfully',{

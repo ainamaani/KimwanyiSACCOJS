@@ -101,7 +101,11 @@ const UpdateMemberData = ():JSX.Element => {
     useEffect(()=>{
         const fetchInitialDetails = async() =>{
             try {
-               const initialMemberData =  await axios.get<InitialMemberDetails>(`http://localhost:4343/api/members/${member.id}`);
+               const initialMemberData =  await axios.get<InitialMemberDetails>(`http://localhost:4343/api/members/${member.id}`,{
+                headers:{
+                    'Authorization': `Bearer ${member.token}`
+                }
+               });
                if(initialMemberData.status === 200){
                     const data : InitialMemberDetails = initialMemberData.data;
                     console.log(data);
@@ -126,11 +130,17 @@ const UpdateMemberData = ():JSX.Element => {
                 console.log(error);
             }
         }
-        fetchInitialDetails();
+        if(member){
+            fetchInitialDetails();
+        } 
     },[member]);
 
     const handleUpdateMemberDate = async (e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
+
+        if(!member){
+            return;
+        }
 
         const changedFields : ChangedFields = {};
         if(firstName !== initialMemberDetails.firstName){
@@ -183,7 +193,8 @@ const UpdateMemberData = ():JSX.Element => {
             const updatedMemberData = await axios.patch(`http://localhost:4343/api/members/update/${member.id}`,
                                         JSON.stringify(changedFields),{
                                             headers:{
-                                               'Content-Type':'application/json' 
+                                               'Content-Type':'application/json',
+                                               'Authorization': `Bearer ${member.token}`
                                             }
                                         }
             );

@@ -2,6 +2,7 @@ import { Typography,CircularProgress, Grid, Card, CardContent } from "@mui/mater
 import React,{useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import Chart from 'chart.js/auto';
+import useAuthContext from "../hooks/UseAuthContext";
 
 interface Statistics{
     numberOfMembers: number,
@@ -13,6 +14,7 @@ interface Statistics{
 }
 
 const Dashboard = ():JSX.Element => {
+    const {member} = useAuthContext();
     const [statistics, setStatistics] = useState<Statistics | null>(null);
 
     const femaleMembers = statistics ? statistics.numberOfFemaleMembers : 0;
@@ -53,13 +55,19 @@ const Dashboard = ():JSX.Element => {
 
     useEffect(()=>{
         const fetchStatistics = async() =>{
-            const statisticsData = await axios.get('http://localhost:4343/api/dashboard/statistics');
+            const statisticsData = await axios.get('http://localhost:4343/api/dashboard/statistics',{
+                headers:{
+                    'Authorization': `Bearer ${member.token}`
+                }
+            });
             if(statisticsData.status === 200){
                 setStatistics(statisticsData.data);
             }
         }
-        fetchStatistics();
-    },[statistics]);
+        if(member){
+            fetchStatistics();
+        }
+    },[statistics, member]);
 
   
 

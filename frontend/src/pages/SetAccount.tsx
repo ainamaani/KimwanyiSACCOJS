@@ -2,6 +2,7 @@ import { TextField, Typography,Button,Input } from "@mui/material";
 import { styled } from "@mui/system";
 import axios from "axios";
 import React,{useState,useEffect} from 'react';
+import useAuthContext from "../hooks/UseAuthContext";
 
 const StyledTextField = styled(TextField)({
     marginTop: 20,
@@ -27,6 +28,8 @@ const SetAccount = ():JSX.Element => {
     const [password,setPassword] = useState<string>('');
     const [passwordConfirm,setPasswordConfirm] = useState<string>('');
 
+    const {member} = useAuthContext();
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
         if(e.target.files && e.target.files.length > 0){
             setProfilePic(e.target.files[0]);
@@ -35,6 +38,9 @@ const SetAccount = ():JSX.Element => {
 
     const handleDetailsSubmit = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
+        if(!member){
+            return;
+        }
         const formData = new FormData();
         if(profilePic !== null){
             formData.append("profilePic", profilePic);
@@ -47,7 +53,8 @@ const SetAccount = ():JSX.Element => {
                                     formData,
                                     {
                                         headers:{
-                                            'Content-Type':'multipart/form-data'
+                                            'Content-Type':'multipart/form-data',
+                                            'Authorization': `Bearer ${member.token}`
                                         }
                                     }       
                                     ); 

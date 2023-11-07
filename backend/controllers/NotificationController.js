@@ -1,10 +1,10 @@
 const Notification = require('../models/Notification');
 
 const createNotification = async(req,res) =>{
-    const { notificationType, notificationRead, notificationContent } = req.body;
+    const { notificationType,  notificationContent } = req.body;
 
     try {
-        const newNotification = await Notification.create({ notificationType, notificationRead, notificationContent });
+        const newNotification = await Notification.create({ notificationType, notificationContent });
         if(newNotification){
             return res.status(200).json(newNotification);
         }else{

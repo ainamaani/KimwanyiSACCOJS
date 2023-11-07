@@ -41,13 +41,17 @@ const LoanRequest = ():JSX.Element => {
         e.preventDefault();
         console.log(amountRequested,prefferedPaymentSchedule,loanPurpose,loanType,monthlyIncome,
                     otherSourcesOfIncome,guarantorName,guarantorEmail,guarantorPhoneNumber);
+        if(!member){
+            return;
+        }
 
         try {
             const response = await axios.post(`http://localhost:4343/api/loans/request/${member.email}`,
                                 JSON.stringify({ amountRequested,prefferedPaymentSchedule,loanPurpose,loanType,monthlyIncome,
                                     otherSourcesOfIncome,guarantorName,guarantorEmail,guarantorPhoneNumber }),{
                                         headers:{
-                                            'Content-Type':'application/json'
+                                            'Content-Type':'application/json',
+                                            'Authorization':`Bearer ${member.token}`
                                         }
                                     }
             );

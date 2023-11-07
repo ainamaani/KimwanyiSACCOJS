@@ -16,6 +16,9 @@ const MakeTransaction = ():JSX.Element => {
 
     const handleMakeTransaction = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
+        if(!member){
+            return;
+        }
         console.log(transactionType, amount);
         const transactionData = { transactionType, amount }
 
@@ -24,7 +27,8 @@ const MakeTransaction = ():JSX.Element => {
                                 JSON.stringify(transactionData),
                                 {
                                     headers:{
-                                        'Content-Type':'application/json'
+                                        'Content-Type':'application/json',
+                                        'Authorization': `Bearer ${member.token}`
                                     }
                                 }
             )

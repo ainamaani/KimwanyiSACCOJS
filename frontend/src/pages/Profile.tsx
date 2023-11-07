@@ -53,7 +53,11 @@ const Profile = ():JSX.Element => {
     useEffect(()=>{
         const fetchLoggedInUserData = async() =>{
             try {
-                const response = await axios.get<LoggedInUser | LoggedInUser[]>(`http://localhost:4343/api/members/member/${member.email}`);
+                const response = await axios.get<LoggedInUser | LoggedInUser[]>(`http://localhost:4343/api/members/member/${member.email}`,{
+                    headers:{
+                        'Authorization': `Bearer ${member.token}`
+                    }
+                });
                 console.log("API Response:", response);
 
                 if (Array.isArray(response.data)) {
@@ -71,18 +75,24 @@ const Profile = ():JSX.Element => {
                 console.log("Error while fetching user data:", error);
             }
         }
-        fetchLoggedInUserData();
+        if(member){
+            fetchLoggedInUserData();
+        }
     },[member]);
 
     // function for changing password
     const handleChangePassword = async(e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if(!member){
+            return;
+        }
         setError('');
         try {
             const response = await axios.post(`http://localhost:4343/api/members/changepassword/${loggedInMemberData?._id}`,
                                     JSON.stringify({ currentPassword,newPassword }),{
                                         headers:{
-                                            'Content-Type':'application/json'
+                                            'Content-Type':'application/json',
+                                            'Authorization': `Bearer ${member.token}`
                                         }
                                     }
             );

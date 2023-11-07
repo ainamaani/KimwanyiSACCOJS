@@ -4,6 +4,7 @@ import React,{useEffect,useState} from 'react';
 import axios from 'axios';
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import useAuthContext from "../hooks/UseAuthContext";
 
 // Define a styled TextField component
 const StyledTextField = styled(TextField)({
@@ -30,6 +31,7 @@ const StyledPageContent = styled('div')({
 })
 
 const MemberApplicationPage = ():JSX.Element => {
+    const { member } = useAuthContext();
     // define default date for the date of birth
     const defaultDate = new Date('1990-01-01').toISOString().substr(0, 10);
     // states definition
@@ -50,14 +52,13 @@ const MemberApplicationPage = ():JSX.Element => {
     const [nextOfKinPhoneNumber,setNextOfKinPhoneNumber] = useState<string>('');
     const [errors,setErrors] = useState<Record<string, string>>({});
 
-    // logging the errors when the object changes and outside the function to allow time for setting the errors
-    useEffect(()=>{
-        console.log(errors);
-    },[errors])
-
     // function to handle member application
     const handleMemberApplication = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
+
+        if(!member){
+            return
+        }
         
         const memberApplicationData ={firstName,lastName,email,dateOfBirth,residentialAddress,gender,phoneNumber,
             employmentStatus,employerName,employerEmail,employerPhoneNumber,nextOfKin,
@@ -68,7 +69,8 @@ const MemberApplicationPage = ():JSX.Element => {
             JSON.stringify(memberApplicationData),
             {
                 headers:{
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
+                    'Authorization':`Bearer ${member.token}`
                 }
             });
             // reset the error object

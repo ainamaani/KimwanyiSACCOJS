@@ -13,7 +13,6 @@ const NotificationSchema = new mongoose.Schema({
     },
     notificationRead:{
         type:Boolean,
-        required: [true, "The read status is required"],
         default: false
     },
     notificationContent:{

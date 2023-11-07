@@ -5,12 +5,17 @@ const { handleMemberApplication,getMemberData,
     loggedInUserData,changePassword } = require("../controllers/MemberController");
 const router = express.Router();
 
+const RequireAuth = require('../middleware/RequireAuth');
+
 
 router.post('/apply', handleMemberApplication);
 
-router.get('/approvedmembers', getApprovedMembers);
-
 router.post('/login', memberLogin);
+
+// require authentication for all the member requests
+router.use(RequireAuth);
+
+router.get('/approvedmembers', getApprovedMembers);
 
 router.get('/', getMemberData);
 
