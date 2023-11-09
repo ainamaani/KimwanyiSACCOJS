@@ -19,7 +19,7 @@ const getMemberNotifications = async(req,res) =>{
     const { id } = req.params;
 
     try {
-        const memberNotifications = await Notification.find({ member:id }).sort({ createdAt:-1 });
+        const memberNotifications = await Notification.find({ member:id }).sort({ createdAt:-1 }).populate('member');
         if(memberNotifications){
             return res.status(200).json(memberNotifications);
         }else{
@@ -30,7 +30,21 @@ const getMemberNotifications = async(req,res) =>{
     }
 }
 
+const getAllNotifications = async(req,res) =>{
+    try {
+        const allNotifications = await Notification.find({});
+        if(allNotifications){
+            return res.status(200).json(allNotifications);
+        }else{
+            return res.status(400).json({ error: "Notifications failed to be fetched" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     createNotification,
-    getMemberNotifications
+    getMemberNotifications,
+    getAllNotifications
 }

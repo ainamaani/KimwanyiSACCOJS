@@ -1,14 +1,16 @@
 import { DashboardOutlined,AccountCircleOutlined,CreditCardOutlined,
-    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined, MoneyOffCsredOutlined, MonetizationOnOutlined } from "@mui/icons-material";
+    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined, MoneyOffCsredOutlined, MonetizationOnOutlined, NotificationsActiveOutlined } from "@mui/icons-material";
 import { Drawer, Typography, List, ListItem, ListItemIcon,ListItemText,
-    AppBar,Toolbar, Button } from "@mui/material";
+    AppBar,Toolbar, Button, IconButton, Badge } from "@mui/material";
 import { useNavigate,useLocation } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/system";
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import useAuthContext from "../hooks/UseAuthContext";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import NotificationsPanel from "./NotificationPanel";
 
 
 
@@ -137,6 +139,19 @@ const menuItems = [
     }
 ]
 
+interface Notification {
+    _id:string,
+    member:{
+        _id:string,
+        firstName:string,
+        lastName:string,
+        email:string
+    },
+    notificationType:string,
+    notificationRead:string,
+    notificationContent:string
+}
+
 const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
     const {member,dispatch} = useAuthContext();
     const navigate = useNavigate();
@@ -144,10 +159,35 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
     const classes = useStyles();
 
     const [showLoansSubMenu, setShowLoansSubMenu] = useState<boolean>(false);
+    // state to handle the visibility of the notifications panel
+    const [showNotifications, setShowNotifications] = useState<boolean>(false);
+    // state to store the notifications
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+
+    // fetch the notifications
+    useEffect(()=>{
+        const fetchNotifications = async() =>{
+            const allNotifications = await axios.get('http://localhost:4343/api/notifications/',{
+                headers:{
+                    'Authorization': `Bearer ${member.token}`
+                }
+            });
+            if(allNotifications.status === 200){
+                const data : Notification[] = allNotifications.data
+                setNotifications(data);
+            }
+        }
+        if(member){
+            fetchNotifications();
+        }
+    },[member]);
 
     const handleLoansClick = () =>{
-        
         setShowLoansSubMenu(!showLoansSubMenu);
+    }
+
+    const handleNotificationsClick = () =>{
+        setShowNotifications(!showNotifications);
     }
 
     const handleLogout = () =>{
@@ -172,13 +212,27 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
                         Kimwanyi SACCO
                     </Typography>
                     { member && (
-                        <Typography variant="h5">{member.firstName}</Typography>
+                        <div style={{ display: "flex"}}>
+                            <IconButton color="primary" onClick={handleNotificationsClick} style={{ marginRight:"20px" }}>
+                                <Badge badgeContent={notifications?.length} color="error">
+                                    <NotificationsActiveOutlined />
+                                </Badge>
+                            </IconButton>
+                            <Typography variant="h5">{member.firstName}</Typography>
+                        </div>
                     )}
                     <Button onClick={handleLogout} variant="outlined"
                     style={{ marginLeft: '10px'}}
                     >Log out</Button>
                 </Toolbar>
             </StyledAppBar>
+            {/* Display Notifications */}
+            {showNotifications && (
+                <NotificationsPanel
+                    notifications={notifications}
+                    closePanel={() => setShowNotifications(false)}
+                />
+            )}
             {/* Drawer */}
             <Drawer
             className={classes.drawer}
