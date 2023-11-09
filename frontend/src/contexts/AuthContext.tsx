@@ -12,12 +12,14 @@ interface AuthAction{
 interface AuthContextType extends AuthState{
     dispatch: React.Dispatch<AuthAction>;
     state?: AuthState
+    loading: boolean
 }
 
 export const AuthContext = createContext<AuthContextType>({
     member:null,
     dispatch: () => {},
-    state: {member: null}
+    state: {member: null},
+    loading: false
 });
 
 export const authReducer = (state : AuthState | undefined,action : AuthAction):AuthState=>{
@@ -42,6 +44,8 @@ const AuthContextProvider = ({children}:AuthContextProviderProps) => {
     const [state,dispatch] = useReducer(authReducer,{
         member:null
     });
+    const [loading, setLoading] = useState(true); // Initialize loading state
+    
     //check local storage for the user when the component first renders
     useEffect(()=>{
         const userString = localStorage.getItem('member');
@@ -49,12 +53,15 @@ const AuthContextProvider = ({children}:AuthContextProviderProps) => {
             const member = JSON.parse(userString);
             dispatch({ type:'LOGIN',payload:member })
         }
+        // Set loading to false once the user data is available
+        setLoading(false);
+        
     },[]);
 
     console.log("Auth context state: ",state);
     return ( 
-        <AuthContext.Provider value={{...state,dispatch}}>
-            {children}
+        <AuthContext.Provider value={{...state,dispatch,loading}}>
+                {children}
         </AuthContext.Provider>
      );
 }

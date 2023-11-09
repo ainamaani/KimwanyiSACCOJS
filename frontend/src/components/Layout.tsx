@@ -90,6 +90,11 @@ const menuItems = [
                 text:'View Loan requests ',
                 icon: <AssignmentIndOutlined color="primary" />,
                 path:'/loanrequests'
+            },
+            {
+                text:'View approved Loan ',
+                icon: <AssignmentIndOutlined color="primary" />,
+                path:'/loans'
             }
         ]
     },

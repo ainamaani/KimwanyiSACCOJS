@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter,Routes,Route, Outlet,Navigate } from 'react-router-dom';
 import useAuthContext from './hooks/UseAuthContext';
 import MemberApplicationPage from './pages/Application';
@@ -22,9 +22,21 @@ import UpdateMemberData from './pages/UpdateMemberData';
 import ResetPassword from './pages/ResetPassword';
 import MemberAccounts from './pages/MemberAccounts';
 import CreateNotification from './pages/Notifications';
+import { CircularProgress } from '@mui/material';
 
 function App() {
-  const {member} = useAuthContext();
+  const {member, loading} = useAuthContext();
+  useEffect(()=>{
+    console.log("Member", member);
+  },[member]);
+
+  if(loading){
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "200px" }}>
+          <CircularProgress />
+      </div>
+    )
+  }
 
   return (
     <div className="App">
@@ -56,6 +68,7 @@ function App() {
             <Route path="/update" element={member ? <UpdateMemberData/> : <Navigate to="/login"/>} />
             <Route path="/memberaccounts" element={member ? <MemberAccounts/> : <Navigate to="/login"/>} />
             <Route path="/notifications" element={member ? <CreateNotification/> : <Navigate to="/login"/>} />
+            <Route path="/loans" element={member ? <Loans/> : <Navigate to="/login"/>} />
           </Route>
         </Routes>
       </BrowserRouter>

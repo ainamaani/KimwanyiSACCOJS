@@ -72,6 +72,14 @@ const LoanSchema = new mongoose.Schema({
             values: ["Approved", "Denied" ,"Pending"],
             message: "The loan request status must be one of the values 'Approved','Denied' and 'Pending' "
         }
+    },
+    loanStatus: {
+        type:String,
+        default: "Open",
+        enum: {
+            values: ["Open","Closed"],
+            message: "The loan status must be one of the values 'Open' or 'Closed' "
+        }
     }
     
 

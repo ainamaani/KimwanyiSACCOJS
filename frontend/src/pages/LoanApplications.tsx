@@ -3,8 +3,10 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle,
     TableHead, TablePagination, TableRow, Tooltip, Typography,CircularProgress } from "@mui/material";
 import React,{useState, useEffect} from 'react';
 import axios from 'axios';
-import { VisibilityRounded } from "@mui/icons-material";
+import { CancelOutlined, CheckCircleOutlineOutlined, VisibilityRounded } from "@mui/icons-material";
 import useAuthContext from "../hooks/UseAuthContext";
+import { toast } from "react-toastify";
+import LoanRequest from "./LoanRequest";
 
 interface LoanRequest {
     _id:string,
@@ -45,8 +47,14 @@ const LoanApplications = ():JSX.Element => {
     const [loanRequests, setLoanRequests] = useState<LoanRequest[] | null>(null);
     const [page,setPage] = useState<number>(0); //current page
     const [rowsPerPage,setRowsPerPage] = useState<number>(5); //Rows per page
+    const [isApproveLoanDialogOpen,setIsApproveLoanDialogOpen] = useState<boolean>(false);
+    const [loanRequestToApprove,setLoanRequestToApprove] = useState<string | null>(null);
+    const [isDeclineLoanDialogOpen,setIsDeclineLoanDialogOpen] = useState<boolean>(false);
+    const [loanRequestToDecline,setLoanRequestToDecline] = useState<string | null>(null);
     const [isViewDialogOpen,setIsViewDialogOpen] = useState<boolean>(false);
     const [loanRequestToView,setLoanRequestToView] = useState<LoanRequest | null>(null);
+    const [loanAmount, setLoanAmount] = useState<string | null>(null);
+
     const {member} = useAuthContext();
 
 
@@ -71,6 +79,88 @@ const LoanApplications = ():JSX.Element => {
         setIsViewDialogOpen(false);
     }
 
+    // Function to handle opening of the dialog
+    const handleOpenApproveLoanDialog = (loanId : string) =>{
+        setLoanRequestToApprove(loanId);
+        setIsApproveLoanDialogOpen(true);
+    } 
+
+    // Function to handle closing of the dialog
+    const handleCloseApproveLoanDialog = () =>{
+        setLoanRequestToApprove(null);
+        setIsApproveLoanDialogOpen(false);
+        setLoanAmount(null);
+    }
+
+    // Function to handle opening of the dialog
+    const handleOpenDeclineLoanDialog = (loanId : string) =>{
+        setLoanRequestToDecline(loanId);
+        setIsDeclineLoanDialogOpen(true);
+    } 
+
+    // Function to handle closing of the dialog
+    const handleCloseDeclineLoanDialog = () =>{
+        setLoanRequestToDecline(null);
+        setIsDeclineLoanDialogOpen(false);
+    }
+
+    const handleApproveLoanRequest = async(loanRequestToApprove : string | null, loanAmount: string | null) =>{
+        if(!member){
+            return;
+        }
+        if(loanRequestToApprove !== null && loanAmount !== null){
+            try {
+                const approveLoanRequest = await axios.post(`http://localhost:4343/api/loans/approverequest/${loanRequestToApprove}`,
+                { loanAmount:loanAmount },{
+                    headers:{
+                        'Authorization':`Bearer ${member.token}`
+                    }
+                });
+                if(approveLoanRequest.status === 200){
+                    console.log(approveLoanRequest.data);
+                    handleCloseApproveLoanDialog();
+                    toast.success("Loan request approved successfully!!",{
+                        position: "top-right"
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error("Loan request approval failed!!",{
+                    position: "top-right"
+                });
+            }
+        }
+    }
+
+    useEffect(()=>{
+        console.log("Amount", loanAmount)
+    },[loanAmount]);
+    // function to decline loan request
+    const handleDeclineLoanRequest = async(loanRequestToDecline : string | null) =>{
+        
+        if(loanRequestToDecline !== null){
+            try {
+                const declineLoanRequest = await axios.get(`http://localhost:4343/api/loans/declinerequest/${loanRequestToDecline}`,{
+                    headers:{
+                        'Authorization':`Bearer ${member.token}`
+                    }
+                });
+                if(declineLoanRequest.status === 200){
+                    console.log(declineLoanRequest.data);
+                    handleCloseDeclineLoanDialog();
+                    toast.success("Loan request declined successfully!!",{
+                        position: "top-right"
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                toast.error("Loan request declining failed!!",{
+                    position: "top-right"
+                });
+            }
+        }
+    }
+
     // fetch the loan requests
     useEffect(()=>{
         const fetchLoanRequests = async() =>{
@@ -91,7 +181,9 @@ const LoanApplications = ():JSX.Element => {
         if(member){
             fetchLoanRequests();
         }
-    },[loanRequests, member])
+    },[loanRequests, member]);
+
+    
     return ( 
         <div>
             <Typography variant="body1">Loan requests</Typography>
@@ -104,7 +196,6 @@ const LoanApplications = ():JSX.Element => {
                                 <TableCell>Amount requested</TableCell>
                                 <TableCell>Loan Type</TableCell>
                                 <TableCell>Preffered Payment Schedule</TableCell>
-                                <TableCell>Monthly Income</TableCell>
                                 <TableCell>Request Status</TableCell>
                                 <TableCell>Actions</TableCell>
                             </TableRow>
@@ -119,7 +210,6 @@ const LoanApplications = ():JSX.Element => {
                                             <TableCell>{loanRequested.amountRequested}</TableCell>
                                             <TableCell>{loanRequested.loanType}</TableCell>
                                             <TableCell>{loanRequested.prefferedPaymentSchedule}</TableCell>
-                                            <TableCell>{loanRequested.monthlyIncome}</TableCell>
                                             <TableCell>{loanRequested.requestStatus}</TableCell>
                                             <TableCell>
                                                 <Tooltip title="View Loan request details">
@@ -127,6 +217,23 @@ const LoanApplications = ():JSX.Element => {
                                                                 onClick={()=>{handleOpenViewDialog(loanRequested)}}
                                                     >
                                                         <VisibilityRounded />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Approve Loan request">
+                                                    <IconButton color="success" size="large"
+                                                                onClick={()=>{
+                                                                    handleOpenApproveLoanDialog(loanRequested._id);
+                                                                    setLoanAmount(loanRequested.amountRequested);
+                                                                }}
+                                                    >
+                                                        <CheckCircleOutlineOutlined />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Decline Loan request">
+                                                    <IconButton color="error" size="large"
+                                                                onClick={()=>{handleOpenDeclineLoanDialog(loanRequested._id)}}
+                                                    >
+                                                        <CancelOutlined />
                                                     </IconButton>
                                                 </Tooltip>
                                             </TableCell>
@@ -150,6 +257,47 @@ const LoanApplications = ():JSX.Element => {
                     <CircularProgress />
                 </div>
             )}
+            {/* Approve loan request */}
+            <Dialog
+                open={isApproveLoanDialogOpen}
+                onClose={handleCloseApproveLoanDialog}
+            >
+                <DialogTitle>Approve Loan request</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">
+                        Are you sure you want to approve this loan request?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={handleCloseApproveLoanDialog}
+                        variant="contained" color="primary">Close</Button>
+                    <Button 
+                        onClick={() => {handleApproveLoanRequest(loanRequestToApprove, loanAmount )}}
+                        variant="contained" color="success">Approve Loan request</Button>
+                </DialogActions>
+            </Dialog>
+            {/* Decline loan request */}
+            <Dialog
+                open={isDeclineLoanDialogOpen}
+                onClose={handleCloseDeclineLoanDialog}
+            >
+                <DialogTitle>Decline Loan request</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">
+                        Are you sure you want to decline this loan request?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={handleCloseDeclineLoanDialog}
+                        variant="contained" color="primary">Close</Button>
+                    <Button 
+                        onClick={() => {handleDeclineLoanRequest(loanRequestToDecline)}}
+                        variant="contained" color="error">Decline Loan request</Button>
+                </DialogActions>
+            </Dialog>
+            {/* View loan request dialog */}
             <Dialog
                 open={isViewDialogOpen}
                 onClose={handleCloseViewDialog}

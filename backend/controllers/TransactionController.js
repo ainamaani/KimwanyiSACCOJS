@@ -20,6 +20,9 @@ const makeTransaction = async(req,res) =>{
     try {
         const account = await Account.findOne({ member:id });
         if(account){
+            if(account.accountStatus === "Frozen"){
+                return res.status(400).json({ error: "This account is frozen, you can't make any transaction" });
+            }
             accountId = account._id;
 
             if(transactionType === "Deposit"){

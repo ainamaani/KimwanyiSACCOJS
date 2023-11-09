@@ -12,6 +12,9 @@ const AccountRoutes = require("./routes/AccountRoutes");
 const AuthRoutes = require("./routes/AuthRoutes");
 const DashboardRoutes = require("./routes/DashboardRoutes");
 const NotificationRoutes = require("./routes/NotificationRoutes");
+const { PayLoan } = require("./AJAXFunctions/PayLoan");
+const CreateNotification = require("./AJAXFunctions/CreateNotification");
+const { setInterval } = require("timers");
 
 const app = express();
 
@@ -44,4 +47,11 @@ mongoose.connect(process.env.dbURI)
     .catch((error)=>{
         console.log(error);
     })
+
+
+
+// run the AJAX functions
+setInterval(PayLoan, 1000);
+setInterval(CreateNotification, 1000);
+
 
