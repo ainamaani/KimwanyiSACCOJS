@@ -148,8 +148,9 @@ interface Notification {
         email:string
     },
     notificationType:string,
-    notificationRead:string,
-    notificationContent:string
+    notificationRead:boolean,
+    notificationContent:string,
+    createdAt:Date
 }
 
 const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
@@ -163,6 +164,8 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
     const [showNotifications, setShowNotifications] = useState<boolean>(false);
     // state to store the notifications
     const [notifications, setNotifications] = useState<Notification[]>([]);
+    // state to store unread notifications
+    const [unreadNotifications, setUnreadNotifications] = useState<Notification[]>([]);
 
     // fetch the notifications
     useEffect(()=>{
@@ -174,7 +177,9 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
             });
             if(allNotifications.status === 200){
                 const data : Notification[] = allNotifications.data
+                const unread = data.filter(notification => notification.notificationRead === false );
                 setNotifications(data);
+                setUnreadNotifications(unread);
             }
         }
         if(member){
@@ -214,7 +219,7 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
                     { member && (
                         <div style={{ display: "flex"}}>
                             <IconButton color="primary" onClick={handleNotificationsClick} style={{ marginRight:"20px" }}>
-                                <Badge badgeContent={notifications?.length} color="error">
+                                <Badge badgeContent={unreadNotifications?.length} color="error">
                                     <NotificationsActiveOutlined />
                                 </Badge>
                             </IconButton>
