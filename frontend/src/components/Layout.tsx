@@ -1,7 +1,11 @@
 import { DashboardOutlined,AccountCircleOutlined,CreditCardOutlined,
-    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined, MoneyOffCsredOutlined, MonetizationOnOutlined, NotificationsActiveOutlined } from "@mui/icons-material";
+    PaymentOutlined,LogoutOutlined,AssignmentIndOutlined, GroupOutlined, 
+    MoneyOffCsredOutlined, MonetizationOnOutlined, NotificationsActiveOutlined, 
+    PersonOutlineOutlined, PeopleOutlined, CreditScoreOutlined, RequestPageOutlined, 
+    VisibilityOutlined, 
+    PreviewOutlined} from "@mui/icons-material";
 import { Drawer, Typography, List, ListItem, ListItemIcon,ListItemText,
-    AppBar,Toolbar, Button, IconButton, Badge } from "@mui/material";
+    AppBar,Toolbar, Button, IconButton, Badge, Tooltip } from "@mui/material";
 import { useNavigate,useLocation } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { styled } from "@mui/system";
@@ -65,7 +69,7 @@ const menuItems = [
     },
     {
         text:'Profile',
-        icon: <AccountCircleOutlined color="primary" />,
+        icon: <PersonOutlineOutlined color="primary"/>,
         path:'/profile'
     },
     {
@@ -75,7 +79,7 @@ const menuItems = [
     },
     {
         text:'Member Accounts',
-        icon: <AccountCircleOutlined color="primary" />,
+        icon: <PeopleOutlined color="primary"/>,
         path:'/memberaccounts'
     },
     {
@@ -85,24 +89,24 @@ const menuItems = [
         subItems: [
             {
                 text:'Request Loan',
-                icon: <AssignmentIndOutlined color="primary" />,
+                icon: <RequestPageOutlined color="primary"/>,
                 path:'/requestloan'
             },
             {
                 text:'View Loan requests ',
-                icon: <AssignmentIndOutlined color="primary" />,
+                icon: <VisibilityOutlined color="primary"/>,
                 path:'/loanrequests'
             },
             {
                 text:'View approved Loan ',
-                icon: <AssignmentIndOutlined color="primary" />,
+                icon: <PreviewOutlined color="primary"/>,
                 path:'/loans'
             }
         ]
     },
     {
         text:'Transactions',
-        icon: <PaymentOutlined color="primary" />,
+        icon: <CreditScoreOutlined color="primary"/>,
         path:'/transactions',
         subItems: [
             {
@@ -112,7 +116,7 @@ const menuItems = [
             },
             {
                 text: 'View transactions',
-                icon: <MonetizationOnOutlined color="primary"/>,
+                icon: <VisibilityOutlined color="primary"/>,
                 path: '/transactions'
             }
         ]
@@ -124,7 +128,7 @@ const menuItems = [
     },
     {
         text:'Notifications',
-        icon: <AssignmentIndOutlined color="primary" />,
+        icon: <NotificationsActiveOutlined color="primary"/>,
         path:'/notifications'
     },
     {
@@ -160,6 +164,7 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
     const classes = useStyles();
 
     const [showLoansSubMenu, setShowLoansSubMenu] = useState<boolean>(false);
+    const [showTransactionsSubMenu, setShowTransactionsSubMenu] = useState<boolean>(false)
     // state to handle the visibility of the notifications panel
     const [showNotifications, setShowNotifications] = useState<boolean>(false);
     // state to store the notifications
@@ -189,10 +194,32 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
 
     const handleLoansClick = () =>{
         setShowLoansSubMenu(!showLoansSubMenu);
+        setShowTransactionsSubMenu(false); // close transactions sub menu
     }
 
-    const handleNotificationsClick = () =>{
+    const handleTransactionsClick = () =>{
+        setShowTransactionsSubMenu(!showTransactionsSubMenu);
+        setShowLoansSubMenu(false); // close loans sub menu
+    }
+
+    const handleNotificationsClick = async() =>{
         setShowNotifications(!showNotifications);
+        // change the read status of the notifications
+        try {
+            if(!member){
+                return
+            }
+            const changeStatus = await axios.get('http://localhost:4343/api/notifications/changestatus',{
+                headers:{
+                    'Authorization' : `Bearer ${member.token}`
+                }
+            });
+            if(changeStatus.status === 200){
+                console.log(changeStatus.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handleLogout = () =>{
@@ -218,11 +245,15 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
                     </Typography>
                     { member && (
                         <div style={{ display: "flex"}}>
-                            <IconButton color="primary" onClick={handleNotificationsClick} style={{ marginRight:"20px" }}>
-                                <Badge badgeContent={unreadNotifications?.length} color="error">
-                                    <NotificationsActiveOutlined />
-                                </Badge>
-                            </IconButton>
+                            <Tooltip title="View notifications">
+                                <IconButton color="primary" 
+                                    onClick={handleNotificationsClick} 
+                                    style={{ marginRight:"20px" }}>
+                                        <Badge badgeContent={unreadNotifications?.length} color="error">
+                                            <NotificationsActiveOutlined />
+                                        </Badge>
+                                </IconButton>
+                            </Tooltip>
                             <Typography variant="h5">{member.firstName}</Typography>
                         </div>
                     )}
@@ -257,13 +288,29 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
                             {item.subItems ? (
                                 // Render sub-menu items
                                 <>
-                                    <ListItem button 
-                                    onClick={handleLoansClick}>
+                                    <ListItem button
+                                        onClick={item.text === 'Loans' ? handleLoansClick : (item.text === 'Transactions' ? handleTransactionsClick : undefined)}
+                                    >
                                         <ListItemIcon>{item.icon}</ListItemIcon>
                                         <ListItemText secondary={item.text} />
                                     </ListItem>
-                                    {showLoansSubMenu && (
-                                        <List style={{ marginLeft:"20px" }}>
+                                    {item.text === 'Loans' && showLoansSubMenu && (
+                                        <List style={{ marginLeft: "20px" }}>
+                                            {item.subItems.map(subItem => (
+                                                <ListItem
+                                                    key={subItem.text}
+                                                    button
+                                                    onClick={() => navigate(subItem.path)}
+                                                    className={location.pathname === subItem.path ? classes.active : undefined}
+                                                >
+                                                    <ListItemIcon>{subItem.icon}</ListItemIcon>
+                                                    <ListItemText secondary={subItem.text} />
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    )}
+                                    {item.text === 'Transactions' && showTransactionsSubMenu && (
+                                        <List style={{ marginLeft: "20px" }}>
                                             {item.subItems.map(subItem => (
                                                 <ListItem
                                                     key={subItem.text}

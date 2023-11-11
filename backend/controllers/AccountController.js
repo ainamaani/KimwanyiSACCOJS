@@ -44,8 +44,25 @@ const freezeAccount = async(req,res) =>{
     }
 }
 
+const unFreezeAccount = async(req,res) =>{
+    const {id} = req.params;
+    try {
+        const accountToUnfreeze = await Account.findById(id);
+        if(accountToUnfreeze){
+            accountToUnfreeze.accountStatus = "Active";
+            await accountToUnfreeze.save({ validateBeforeSave:false })
+            return res.status(200).json(accountToUnfreeze);
+        }else{
+            return res.status(400).json({ error: "Failed to fetch the account to unfreeze" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     getAccounts,
     getMemberAccountData,
-    freezeAccount
+    freezeAccount,
+    unFreezeAccount
 }

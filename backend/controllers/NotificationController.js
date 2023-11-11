@@ -43,8 +43,28 @@ const getAllNotifications = async(req,res) =>{
     }
 }
 
+const changeReadStatus = async(req,res) =>{
+    try {
+        const notificationsStatusToUpdate = await Notification.find({ notificationRead: false });
+        console.log(notificationsStatusToUpdate);
+        if(notificationsStatusToUpdate.length > 0){
+            for(const notificationStatus of notificationsStatusToUpdate){
+                notificationStatus.notificationRead = true;
+                await notificationStatus.save({ validateBeforeSave:false });
+            }
+            return res.status(200).json(notificationsStatusToUpdate);
+
+        }else{
+            return res.status(400).json({ error: "Failed to fetch the notification" });
+        }
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
 module.exports = {
     createNotification,
     getMemberNotifications,
-    getAllNotifications
+    getAllNotifications,
+    changeReadStatus
 }

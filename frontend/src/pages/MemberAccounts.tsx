@@ -1,7 +1,7 @@
 import { Typography,CircularProgress, TableContainer, Table, Paper, TableHead, TableRow, TableCell, TableBody, Tooltip, IconButton, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import React,{useState,useEffect} from 'react';
 import axios from 'axios';
-import { LockOpenOutlined } from "@mui/icons-material";
+import { LockOpenOutlined, LockOutlined } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import useAuthContext from "../hooks/UseAuthContext";
@@ -28,6 +28,9 @@ const MemberAccounts = ():JSX.Element => {
     const [rowsPerPage,setRowsPerPage] = useState<number>(5); //Rows per page
     const [isFreezeDialogOpen,setIsFreezeDialogOpen] = useState<boolean>(false);
     const [accountToFreeze,setAccountToFreeze] = useState<string | null>(null);
+    const [isUnFreezeDialogOpen,setIsUnFreezeDialogOpen] = useState<boolean>(false);
+    const [accountToUnFreeze,setAccountToUnFreeze] = useState<string | null>(null);
+
 
     // fetch accounts
     useEffect(()=>{
@@ -72,6 +75,18 @@ const MemberAccounts = ():JSX.Element => {
         setIsFreezeDialogOpen(false);
     }
 
+    // Function to handle opening of the dialog
+    const handleOpenUnFreezeDialog = (accountId : string) =>{
+        setAccountToUnFreeze(accountId);
+        setIsUnFreezeDialogOpen(true);
+    } 
+
+    // Function to handle closing of the dialog
+    const handleCloseUnFreezeDialog = () =>{
+        setAccountToUnFreeze(null);
+        setIsUnFreezeDialogOpen(false);
+    }
+
     // function to freeze account
     const handleFreezeAccount = async(accountToFreeze : string | null) =>{
         if(!member){
@@ -95,6 +110,33 @@ const MemberAccounts = ():JSX.Element => {
             toast.error("Failed to feeze account",{
                 position: "top-right"
             })
+        }
+    }
+
+    const handleUnFreezeAccount = async(accountToUnfreeze : string | null) =>{
+        if(!member){
+            return
+        }
+        if(accountToUnfreeze !== null){
+            try {
+                const unFreezeAccount = await axios.get(`http://localhost:4343/api/accounts/unfreeze/${accountToUnfreeze}`,{
+                    headers:{
+                        'Authorization' : `Bearer ${member.token}`
+                    }
+                });
+                if(unFreezeAccount.status === 200){
+                    handleCloseUnFreezeDialog();
+                    toast.success("Account unfrozen successfully",{
+                        position:"top-right"
+                    });
+                }
+
+            } catch (error) {
+                console.log(error);
+                toast.error("Account failed to be unfrozen",{
+                    position:"top-right"
+                })
+            }
         }
     }
 
@@ -126,14 +168,25 @@ const MemberAccounts = ():JSX.Element => {
                                         <TableCell>{account.openingDate ? new Date(account.openingDate).toLocaleDateString() : ''}</TableCell>
                                         <TableCell>{account.accountStatus}</TableCell>
                                         <TableCell>
-                                            <Tooltip title="Freeze account">
-                                                <IconButton
-                                                    color="primary" size="large"
-                                                    onClick={()=>{ handleOpenFreezeDialog(account._id)}}
-                                                >
-                                                    <LockOpenOutlined />
-                                                </IconButton>
-                                            </Tooltip>
+                                            { account.accountStatus !== "Frozen" ? (
+                                                <Tooltip title="Freeze account">
+                                                    <IconButton
+                                                        color="error" size="large"
+                                                        onClick={()=>{ handleOpenFreezeDialog(account._id)}}
+                                                    >
+                                                        <LockOutlined />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            ):(
+                                                <Tooltip title="Unfreeze account">
+                                                    <IconButton
+                                                        color="primary" size="large"
+                                                        onClick={()=>{ handleOpenUnFreezeDialog(account._id)}}
+                                                    >
+                                                        <LockOpenOutlined />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -171,10 +224,34 @@ const MemberAccounts = ():JSX.Element => {
                         Close
                     </Button>
                     <Button
-                        color="primary" variant="contained"
+                        color="error" variant="contained"
                         onClick={()=>{handleFreezeAccount(accountToFreeze)}}
                     >
                         Freeze
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            {/* Unfreeze account dialog */}
+            <Dialog
+                open={isUnFreezeDialogOpen}
+                onClose={handleCloseUnFreezeDialog}
+            >
+                <DialogTitle>Unfreeze Account</DialogTitle>
+                <DialogContent>
+                    <Typography variant="body1">Are you sure you want to unfreeze the account?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color="primary" variant="contained"
+                        onClick={handleCloseUnFreezeDialog}
+                    >
+                        Close
+                    </Button>
+                    <Button
+                        color="success" variant="contained"
+                        onClick={()=>{handleUnFreezeAccount(accountToUnFreeze)}}
+                    >
+                        Unfreeze
                     </Button>
                 </DialogActions>
             </Dialog>
