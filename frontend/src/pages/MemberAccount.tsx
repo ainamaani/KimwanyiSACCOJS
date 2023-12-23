@@ -119,7 +119,7 @@ const MemberAccount = ():JSX.Element => {
                                 { transactionData
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((transc : Transaction) => (
-                                    <TableRow>
+                                    <TableRow key={transc._id}>
                                         <TableCell>{transc.amount}</TableCell>
                                         <TableCell>{transc.transactionType}</TableCell>
                                         <TableCell>{transc.transactionDate ? new Date(transc.transactionDate).toLocaleDateString() : ''}</TableCell>

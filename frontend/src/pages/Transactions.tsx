@@ -4,6 +4,7 @@ import axios from 'axios';
 import useAuthContext from "../hooks/UseAuthContext";
 
 interface Transaction{
+    _id:string,
     member:{
         _id:string,
         firstName:string,
@@ -81,7 +82,7 @@ const ViewTransactions = ():JSX.Element => {
                              transactions
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((transaction : Transaction) =>(
-                                    <TableRow>
+                                    <TableRow key={transaction._id}>
                                         <TableCell>{transaction.member.firstName + " "}{transaction.member.lastName}</TableCell>
                                         <TableCell>{transaction.account.accountNumber}</TableCell>
                                         <TableCell>{transaction.amount}</TableCell>

@@ -135,11 +135,6 @@ const menuItems = [
         text:'Members',
         icon: <GroupOutlined color="primary"/>,
         path:'/members'
-    },
-    {
-        text:'Logout',
-        icon: <LogoutOutlined color="primary" />,
-        path:'/logout'
     }
 ]
 
@@ -162,6 +157,10 @@ const Layout = ({children}:{children:React.ReactNode}):JSX.Element => {
     const navigate = useNavigate();
     const location = useLocation();
     const classes = useStyles();
+
+    if(!member){
+        navigate('/login');
+    }
 
     const [showLoansSubMenu, setShowLoansSubMenu] = useState<boolean>(false);
     const [showTransactionsSubMenu, setShowTransactionsSubMenu] = useState<boolean>(false)

@@ -161,7 +161,7 @@ const MemberAccounts = ():JSX.Element => {
                             memberAccounts
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((account : MemberAccount) =>(
-                                    <TableRow>
+                                    <TableRow key={account._id}>
                                         <TableCell>{account.member.firstName + " "}{account.member.lastName}</TableCell>
                                         <TableCell>{account.accountNumber}</TableCell>
                                         <TableCell>{account.accountBalance}</TableCell>

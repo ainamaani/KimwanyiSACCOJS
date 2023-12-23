@@ -97,7 +97,7 @@ const Loans = ():JSX.Element => {
                         { loans
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((loan : Loan) => (
-                                <TableRow>
+                                <TableRow key={loan._id}>
                                     <TableCell>{loan.member.firstName + " "}{loan.member.lastName}</TableCell>
                                     <TableCell>{loan.amountRequested}</TableCell>
                                     <TableCell>{loan.loanType}</TableCell>
